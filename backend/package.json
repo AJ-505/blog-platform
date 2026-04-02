@@ -1,0 +1,16 @@
+{
+  "name": "backend",
+	"type": "module",
+  "dependencies": {
+    "express": "5.1.0"
+  },
+	"scripts": {
+		"dev": "tsx watch src/index.ts"
+	},
+  "devDependencies": {
+    "@types/express": "5.0.0",
+    "@types/node": "20.11.17",
+    "tsx": "^4.20.6",
+    "typescript": "5.8.3"
+  }
+}
