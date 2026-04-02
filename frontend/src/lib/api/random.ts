@@ -3,8 +3,10 @@ import {
   type RandomNumberResponse,
 } from "@shared/random"
 
+const apiBasePath = import.meta.env.DEV ? "" : "/_/backend"
+
 export async function fetchRandomNumber(): Promise<RandomNumberResponse> {
-  const response = await fetch("/api/random", {
+  const response = await fetch(`${apiBasePath}/api/random`, {
     method: "GET",
     headers: {
       Accept: "application/json",
