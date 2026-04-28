@@ -36,8 +36,19 @@ If the piece of UI you are building needs any of the following, it belongs in th
 - Event listeners like `onClick`, `onChange`, `onSubmit`.
 - Browser-only APIs (like `window` or `localStorage`).
 
-### Workflow Example
+### Workflow Example: The Sample API Widget
 
-1. Build your interactive widget (e.g., `HelloWidget.tsx`) here in `src/components/`. Add `"use client";` to the top.
-2. Inside that widget, you can use `fetch()` to call our backend APIs.
-3. Import your widget into the `page.tsx` file where it needs to be displayed!
+If you run the app (`pnpm run dev`) and visit `http://localhost:3000`, you will see a "Sample API Integration" section. Here is exactly how that works under the hood:
+
+1. **The Client Component (`src/components/HelloWidget.tsx`):**
+   * This file starts with `"use client";`.
+   * It uses `useState` to track a loading state and a message.
+   * It has a `button` with an `onClick` handler. When clicked, it runs a standard `fetch("/api/hello")` to hit our backend.
+   * This component handles all the visual loading logic and error states.
+
+2. **The Server Page (`src/app/page.tsx`):**
+   * This is an *actual Next.js Server Component page*. It does **NOT** have `"use client";` at the top.
+   * The team lead wrote the HTML structure here.
+   * The `HelloWidget` is imported and placed directly into the layout: `<HelloWidget />`.
+
+This separation of concerns is how you and the rest of the team will build out this entire application!
