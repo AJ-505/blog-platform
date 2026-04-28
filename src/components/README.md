@@ -26,9 +26,9 @@ Next.js introduces a concept that splits React into two worlds:
 To ensure you can iterate fast and write React code exactly the way you know how, follow this rule:
 
 1. **Pages (`src/app/**/page.tsx`) are Server Components.\*\* The team lead handles data fetching here. You can write HTML and Tailwind classes here, but NO React hooks.
-2. **Components (`src/components/`) are Client Components.** Every file in this folder MUST start with `"use client";` at the very top.
+2. **Components (`src/components/`) are Server Components by default!** But if a component needs client-only features (hooks, event handlers, browser APIs), you MUST add `"use client";` at the very top of that file. Pure presentational/dumb components can remain server-rendered.
 
-### When to use `src/components`
+### When to add `"use client"` in `src/components`
 
 If the piece of UI you are building needs any of the following, it belongs in this folder:
 

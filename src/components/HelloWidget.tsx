@@ -13,6 +13,7 @@ export function HelloWidget() {
     try {
       // Calling the sample API we built in src/app/api/hello/route.ts
       const res = await fetch("/api/hello");
+      if (!res.ok) throw new Error("API returned an error");
       const data = await res.json();
       setMessage(data.message);
     } catch (error) {
