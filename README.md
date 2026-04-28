@@ -81,7 +81,25 @@ Format: `<type>: <short description>`
 - `test`: Adding missing tests or correcting existing ones (e.g., `test: add unit tests for posts`)
 - `chore`: Updating build tasks, package manager configs, etc. (e.g., `chore: update pnpm dependencies`)
 
-### 3. Code Formatting (Prettier)
+### 3. Syncing Your Fork (CRITICAL STEP)
+
+Before creating a Pull Request (or even starting new work), you **must** ensure your code is up-to-date with the main project. If you don't do this, you may run into "Merge Conflicts", which are a headache to solve.
+
+**Why is this important? (An Example):**
+Imagine you and your teammate, Sarah, are both working on the project. Sarah finishes a feature that updates the `Header` component, and her code gets merged into the main project. Meanwhile, you've been working on your own fork for three days. Your fork is now *out of date*. If you also made changes to the `Header` and try to open a PR, GitHub will complain because it doesn't know whose code to keep (yours or Sarah's). 
+
+To prevent this:
+1. Go to your forked repository on GitHub.
+2. Click the **"Sync fork"** button right below the green "Code" button. Click "Update branch". This pulls Sarah's new code into *your* GitHub fork.
+3. In your terminal on your computer, run:
+   ```bash
+   git pull origin main
+   ```
+   This downloads Sarah's code to your local machine so you are working with the absolute newest version of the app.
+
+*Always Sync and Pull before you push your final code or open a PR!*
+
+### 4. Code Formatting (Prettier)
 
 We use [Prettier](https://prettier.io/) to automatically format our code. This ensures everyone's code looks exactly the same, preventing arguments over spaces vs. tabs and making the codebase much easier to read. [Read more about why formatting is important here.](https://prettier.io/docs/en/why-prettier.html)
 
