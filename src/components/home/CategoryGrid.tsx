@@ -1,16 +1,24 @@
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
+import poeticImg from "@/assets/Poetic.png";
+import spatialImg from "@/assets/spatial.png";
+import PhilosophyImg from "@/assets/Philosophy.png";
+import digitalImg from "@/assets/Digital.png";
 
 type Category = {
   title: string;
   tag: string;
-  img: string;
+  img: string | StaticImageData;
 };
 
 const DEFAULT_CATEGORIES: Category[] = [
-  { title: "Modern Stoicism", tag: "PHILOSOPHY", img: "/cat-stoicism.jpg" },
-  { title: "Digital Expression", tag: "VISUAL ARTS", img: "/cat-digital.jpg" },
-  { title: "Poetic Structures", tag: "LITERATURE", img: "/cat-poetry.jpg" },
-  { title: "Spatial Design", tag: "ARCHITECTURE", img: "/cat-architecture.jpg" },
+  { title: "Modern Stoicism", tag: "PHILOSOPHY", img: PhilosophyImg },
+  { title: "Digital Expression", tag: "VISUAL ARTS", img: digitalImg },
+  { title: "Poetic Structures", tag: "LITERATURE", img: poeticImg },
+  {
+    title: "Spatial Design",
+    tag: "ARCHITECTURE",
+    img: spatialImg,
+  },
 ];
 
 export function CategoryGrid({
