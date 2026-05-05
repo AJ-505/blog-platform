@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import heroImage from "@/assets/Creative workspace.png";
 
@@ -17,9 +18,12 @@ export function HeroSection() {
         </p>
 
         <div className="mt-8 flex flex-wrap gap-4">
-          <button className="btn-primary px-7 py-3 rounded-lg font-medium">
+          <Link
+            href="/signup"
+            className="btn-primary px-7 py-3 rounded-lg font-medium"
+          >
             Get Started
-          </button>
+          </Link>
           <button className="btn-secondary px-7 py-3 rounded-lg font-medium border">
             View Showcases
           </button>
