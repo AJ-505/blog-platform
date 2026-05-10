@@ -6,14 +6,14 @@ import literaryspaceImg from "@/assets/literaryspace.png";
 
 export default function SignupPage() {
   return (
-    <main className="bg-background min-h-screen">
+    <main className="min-h-screen">
       <header className="header glassmorphism flex items-center justify-between px-8 py-4">
         <div className="logo font-bold text-2xl" style={{ color: "#0B1F3B" }}>
           SCRIBBLED
         </div>
         <div className="flex items-center gap-3 text-sm text-on-surface-variant">
           <span className="tracking-wide uppercase">Already a member?</span>
-          <Link href="#" className="font-semibold text-on-surface">
+          <Link href="/login" className="font-semibold text-on-surface">
             Sign in
           </Link>
         </div>

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function SiteHeader() {
   return (
     <header className="header glassmorphism flex items-center justify-between px-8 py-4">
@@ -5,18 +7,18 @@ export function SiteHeader() {
         SCRIBBLED
       </div>
       <nav className="flex gap-8 items-center">
-        <a href="#" className="nav-link text-on-surface-variant">
+        <Link href="#" className="nav-link text-on-surface-variant">
           DISCOVER
-        </a>
-        <a href="#" className="nav-link text-on-surface-variant">
+        </Link>
+        <Link href="/feed" className="nav-link text-on-surface-variant">
           FEED
-        </a>
-        <a href="#" className="nav-link text-on-surface-variant">
+        </Link>
+        <Link href="#" className="nav-link text-on-surface-variant">
           CREATORS
-        </a>
-        <a href="#" className="nav-link text-on-surface-variant">
+        </Link>
+        <Link href="#" className="nav-link text-on-surface-variant">
           STUDIO
-        </a>
+        </Link>
       </nav>
       <div className="flex items-center gap-4">
         <input className="search-input" placeholder="search for trends" />

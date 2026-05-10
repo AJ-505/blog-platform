@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/home/SiteHeader";
 
 export default function HomePage() {
   return (
-    <main className="bg-background min-h-screen flex flex-col">
+    <main className="min-h-screen flex flex-col">
       <SiteHeader />
       <div className="container mx-auto max-w-[1120px] px-4 flex-1">
         <HeroSection />
