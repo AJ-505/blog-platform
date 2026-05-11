@@ -23,16 +23,18 @@ CREATE TABLE "posts" (
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
-	"username" text PRIMARY KEY NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
+	"username" text NOT NULL,
 	"name" text NOT NULL,
 	"email" text NOT NULL,
 	"password_hash" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "users_username_unique" UNIQUE("username"),
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
 ALTER TABLE "comments" ADD CONSTRAINT "comments_post_id_posts_id_fk" FOREIGN KEY ("post_id") REFERENCES "public"."posts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "comments" ADD CONSTRAINT "comments_author_id_users_username_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("username") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "follows" ADD CONSTRAINT "follows_follower_id_users_username_fk" FOREIGN KEY ("follower_id") REFERENCES "public"."users"("username") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "follows" ADD CONSTRAINT "follows_following_id_users_username_fk" FOREIGN KEY ("following_id") REFERENCES "public"."users"("username") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "posts" ADD CONSTRAINT "posts_author_id_users_username_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("username") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "comments" ADD CONSTRAINT "comments_author_id_users_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "follows" ADD CONSTRAINT "follows_follower_id_users_id_fk" FOREIGN KEY ("follower_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "follows" ADD CONSTRAINT "follows_following_id_users_id_fk" FOREIGN KEY ("following_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "posts" ADD CONSTRAINT "posts_author_id_users_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
