@@ -22,7 +22,7 @@
         },
         "author_id": {
           "name": "author_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -51,12 +51,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "comments_author_id_users_id_fk": {
-          "name": "comments_author_id_users_id_fk",
+        "comments_author_id_users_username_fk": {
+          "name": "comments_author_id_users_username_fk",
           "tableFrom": "comments",
           "tableTo": "users",
           "columnsFrom": ["author_id"],
-          "columnsTo": ["id"],
+          "columnsTo": ["username"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -73,13 +73,13 @@
       "columns": {
         "follower_id": {
           "name": "follower_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
         "following_id": {
           "name": "following_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -93,21 +93,21 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "follows_follower_id_users_id_fk": {
-          "name": "follows_follower_id_users_id_fk",
+        "follows_follower_id_users_username_fk": {
+          "name": "follows_follower_id_users_username_fk",
           "tableFrom": "follows",
           "tableTo": "users",
           "columnsFrom": ["follower_id"],
-          "columnsTo": ["id"],
+          "columnsTo": ["username"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "follows_following_id_users_id_fk": {
-          "name": "follows_following_id_users_id_fk",
+        "follows_following_id_users_username_fk": {
+          "name": "follows_following_id_users_username_fk",
           "tableFrom": "follows",
           "tableTo": "users",
           "columnsFrom": ["following_id"],
-          "columnsTo": ["id"],
+          "columnsTo": ["username"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -135,7 +135,7 @@
         },
         "author_id": {
           "name": "author_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -168,12 +168,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "posts_author_id_users_id_fk": {
-          "name": "posts_author_id_users_id_fk",
+        "posts_author_id_users_username_fk": {
+          "name": "posts_author_id_users_username_fk",
           "tableFrom": "posts",
           "tableTo": "users",
           "columnsFrom": ["author_id"],
-          "columnsTo": ["id"],
+          "columnsTo": ["username"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -188,16 +188,10 @@
       "name": "users",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
         "username": {
           "name": "username",
           "type": "text",
-          "primaryKey": false,
+          "primaryKey": true,
           "notNull": true
         },
         "name": {
@@ -230,11 +224,6 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "users_username_unique": {
-          "name": "users_username_unique",
-          "nullsNotDistinct": false,
-          "columns": ["username"]
-        },
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
