@@ -1,15 +1,8 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-import * as schema from "./schema";
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
+import { config } from "dotenv";
 
-if (!process.env.DATABASE_URL) {
-  console.error("Missing DATABASE_URL environment variable.");
-  process.exit(1);
-}
+config({ path: ".env" }); // or .env.local
 
-// We use the standard pg Pool for connection pooling, NOT the serverless driver!
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
-
-export const db = drizzle(pool, { schema });
+const sql = neon(process.env.DATABASE_URL!);
+export const db = drizzle({ client: sql });

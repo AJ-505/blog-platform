@@ -9,7 +9,7 @@ import {
 import { relations } from "drizzle-orm";
 
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  username: text("username").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
@@ -21,10 +21,10 @@ export const follows = pgTable(
   {
     followerId: integer("follower_id")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => users.username, { onDelete: "cascade" }),
     followingId: integer("following_id")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => users.username, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => ({
@@ -36,11 +36,11 @@ export const posts = pgTable("posts", {
   id: serial("id").primaryKey(),
   authorId: integer("author_id")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => users.username, { onDelete: "cascade" }),
   title: text("title").notNull(),
   content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date())
 });
 
 export const comments = pgTable("comments", {
@@ -50,7 +50,7 @@ export const comments = pgTable("comments", {
     .references(() => posts.id, { onDelete: "cascade" }),
   authorId: integer("author_id")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => users.username, { onDelete: "cascade" }),
   content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -66,7 +66,7 @@ export const usersRelations = relations(users, ({ many }) => ({
 export const postsRelations = relations(posts, ({ one, many }) => ({
   author: one(users, {
     fields: [posts.authorId],
-    references: [users.id],
+    references: [users.username],
   }),
   comments: many(comments),
 }));
@@ -78,19 +78,19 @@ export const commentsRelations = relations(comments, ({ one }) => ({
   }),
   author: one(users, {
     fields: [comments.authorId],
-    references: [users.id],
+    references: [users.username],
   }),
 }));
 
 export const followsRelations = relations(follows, ({ one }) => ({
   follower: one(users, {
     fields: [follows.followerId],
-    references: [users.id],
+    references: [users.username],
     relationName: "follower",
   }),
   following: one(users, {
     fields: [follows.followingId],
-    references: [users.id],
+    references: [users.username],
     relationName: "following",
   }),
 }));

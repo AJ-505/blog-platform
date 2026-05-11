@@ -10,10 +10,11 @@
     "format": "prettier --write . --cache"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "next": "16.2.4",
-    "pg": "^8.20.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "zod": "^4.4.2"
@@ -27,6 +28,7 @@
     "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
+    "pg": "^8.20.0",
     "prettier": "^3.8.3",
     "tailwindcss": "^4",
     "typescript": "^5"
