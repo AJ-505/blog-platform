@@ -8,7 +8,9 @@ import { NextResponse } from "next/server";
 // Define the schema once — validation + types in one place
 const LoginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters" }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters" }),
 });
 
 // Infer the TypeScript type for free
@@ -28,8 +30,11 @@ export async function POST(req: Request) {
 
   if (!result.success) {
     return NextResponse.json(
-      { error: "Validation failed", details: result.error.flatten().fieldErrors },
-      { status: 400 }
+      {
+        error: "Validation failed",
+        details: result.error.flatten().fieldErrors,
+      },
+      { status: 400 },
     );
   }
 
@@ -50,6 +55,6 @@ export async function POST(req: Request) {
 
   return NextResponse.json({
     message: "Login successful",
-    user: { id: user.id, name: user.name, email: user.email },
+    user: { username: user.username, name: user.name, email: user.email },
   });
 }
