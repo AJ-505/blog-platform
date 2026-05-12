@@ -1,7 +1,11 @@
 import Image from "next/image";
 
 import { SiteHeader } from "@/components/home/SiteHeader";
-import digitalImg from "@/assets/Digital.png";
+import eventImg from "@/assets/Event.png";
+import artImg from "@/assets/Art.png";
+import ballImg from "@/assets/Ball.png";
+import bookImg from "@/assets/Book.png";
+import modelImg from "@/assets/Model.png";
 
 type EventCard = {
   id: string;
@@ -57,9 +61,9 @@ function FeaturedHero() {
     <section className="relative overflow-hidden rounded-3xl border border-black/10 bg-white/70 shadow-sm">
       <div className="absolute inset-0">
         <Image
-          src={digitalImg}
+          src={eventImg}
           alt="Upcoming events"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" />
@@ -81,7 +85,19 @@ function FeaturedHero() {
   );
 }
 
-function EventTile({ event, variant }: { event: EventCard; variant?: "wide" | "tall" }) {
+function EventTile({
+  event,
+  variant,
+  image,
+  objectPosition,
+  fit,
+}: {
+  event: EventCard;
+  variant?: "wide" | "tall";
+  image?: unknown;
+  objectPosition?: string;
+  fit?: "cover" | "contain";
+}) {
   return (
     <article
       className={
@@ -93,9 +109,14 @@ function EventTile({ event, variant }: { event: EventCard; variant?: "wide" | "t
       <div className={variant === "tall" ? "h-[230px]" : "h-[220px]"}>
         <div className="relative h-full">
           <Image
-            src={digitalImg}
+            src={(image ?? eventImg) as never}
             alt={event.title}
-            className="absolute inset-0 w-full h-full object-cover"
+            className={
+              fit === "contain"
+                ? "absolute inset-0 w-full h-full object-contain bg-white/70"
+                : "absolute inset-0 w-full h-full object-cover"
+            }
+            style={{ objectPosition: objectPosition ?? "50% 35%" }}
           />
           {event.timeBadge ? (
             <div className="absolute top-4 left-4 rounded-full bg-white/90 border border-black/10 px-3 py-2 text-xs font-medium">
@@ -148,19 +169,31 @@ function RecommendedCard() {
       <div className="mt-5 space-y-4">
         <div className="flex items-center justify-between rounded-2xl border border-black/10 bg-white/60 p-4">
           <div>
-            <div className="font-medium text-on-surface">Hackathon Prep Night</div>
-            <div className="text-sm text-on-surface-variant">Tomorrow • 7:00 PM</div>
+            <div className="font-medium text-on-surface">
+              Hackathon Prep Night
+            </div>
+            <div className="text-sm text-on-surface-variant">
+              Tomorrow • 7:00 PM
+            </div>
           </div>
-          <button className="w-9 h-9 rounded-full border border-black/10 bg-white" type="button">
+          <button
+            className="w-9 h-9 rounded-full border border-black/10 bg-white"
+            type="button"
+          >
             +
           </button>
         </div>
         <div className="flex items-center justify-between rounded-2xl border border-black/10 bg-white/60 p-4">
           <div>
             <div className="font-medium text-on-surface">Improv Workshop</div>
-            <div className="text-sm text-on-surface-variant">Friday • 4:30 PM</div>
+            <div className="text-sm text-on-surface-variant">
+              Friday • 4:30 PM
+            </div>
           </div>
-          <button className="w-9 h-9 rounded-full border border-black/10 bg-white" type="button">
+          <button
+            className="w-9 h-9 rounded-full border border-black/10 bg-white"
+            type="button"
+          >
             +
           </button>
         </div>
@@ -174,7 +207,8 @@ function CalendarSyncCard() {
     <section className="rounded-3xl border border-black/10 bg-white/80 shadow-sm p-7">
       <div className="text-lg font-semibold text-primary">Calendar Sync</div>
       <p className="mt-2 text-sm text-on-surface-variant leading-relaxed">
-        Never miss a deadline or mixer. Sync SCRIBBLED with your school calendar.
+        Never miss a deadline or mixer. Sync SCRIBBLED with your school
+        calendar.
       </p>
       <button className="btn-primary mt-6 w-full py-3 rounded-xl" type="button">
         Connect Google Calendar
@@ -194,17 +228,22 @@ export default function UpcomingEventsPage() {
 
           <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <EventTile event={EVENTS[0]} variant="wide" />
+              <EventTile event={EVENTS[0]} variant="wide" image={artImg} />
             </div>
             <div className="lg:col-span-1">
-              <EventTile event={EVENTS[1]} variant="tall" />
+              <EventTile event={EVENTS[1]} variant="tall" image={ballImg} />
             </div>
 
             <div className="lg:col-span-1">
-              <EventTile event={EVENTS[2]} />
+              <EventTile event={EVENTS[2]} image={bookImg} />
             </div>
             <div className="lg:col-span-2">
-              <EventTile event={EVENTS[3]} />
+              <EventTile
+                event={EVENTS[3]}
+                image={modelImg}
+                objectPosition="50% 15%"
+                fit="contain"
+              />
             </div>
           </div>
 

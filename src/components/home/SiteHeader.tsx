@@ -16,7 +16,7 @@ export function SiteHeader() {
         <Link href="#" className="nav-link text-on-surface-variant">
           CREATORS
         </Link>
-        <Link href="#" className="nav-link text-on-surface-variant">
+        <Link href="/studio" className="nav-link text-on-surface-variant">
           STUDIO
         </Link>
       </nav>
