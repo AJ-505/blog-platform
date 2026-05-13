@@ -49,7 +49,7 @@ function Pill({
 }) {
   const className = active
     ? "px-5 py-2 rounded-full bg-primary text-on-primary text-sm font-medium"
-    : "px-5 py-2 rounded-full bg-black/10 text-on-surface text-sm font-medium";
+    : "px-5 py-2 rounded-full bg-black/10 text-on-surface text-sm font-medium transition hover:bg-[#F6D3C7] hover:text-primary hover:shadow-sm hover:-translate-y-[1px] border border-transparent hover:border-black/10";
 
   if (href) {
     return (
