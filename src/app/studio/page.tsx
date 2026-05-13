@@ -126,18 +126,22 @@ function SettingsIcon({ className }: { className?: string }) {
   );
 }
 
+import Link from "next/link";
+
 function SidebarLink({
   label,
   active,
   icon: Icon,
+  href,
 }: {
   label: string;
   active?: boolean;
   icon: ComponentType<{ className?: string }>;
+  href: string;
 }) {
   return (
-    <a
-      href="#"
+    <Link
+      href={href}
       className={
         active
           ? "flex items-center gap-3 rounded-xl bg-primary/10 px-4 py-3 text-primary font-medium"
@@ -146,7 +150,7 @@ function SidebarLink({
     >
       <Icon className={active ? "w-5 h-5 text-primary" : "w-5 h-5"} />
       <span>{label}</span>
-    </a>
+    </Link>
   );
 }
 
@@ -239,11 +243,20 @@ export default function StudioPage() {
             </div>
 
             <nav className="mt-4 flex flex-col gap-1">
-              <SidebarLink label="Dashboard" active icon={DashboardIcon} />
-              <SidebarLink label="Manage Blogs" icon={FileTextIcon} />
-              <SidebarLink label="Published" icon={UploadIcon} />
-              <SidebarLink label="Analytics" icon={ChartIcon} />
-              <SidebarLink label="Settings" icon={SettingsIcon} />
+              <SidebarLink
+                label="Dashboard"
+                active
+                icon={DashboardIcon}
+                href="/studio"
+              />
+              <SidebarLink
+                label="Manage Blogs"
+                icon={FileTextIcon}
+                href="/studio/manage-blogs"
+              />
+              <SidebarLink label="Published" icon={UploadIcon} href="#" />
+              <SidebarLink label="Analytics" icon={ChartIcon} href="#" />
+              <SidebarLink label="Settings" icon={SettingsIcon} href="#" />
             </nav>
           </aside>
 
