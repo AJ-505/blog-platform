@@ -271,13 +271,6 @@ export default function StudioPage() {
                   Your visionary insights reached 12.4k new readers this week.
                 </p>
               </div>
-
-              <button
-                className="btn-primary px-6 py-3 rounded-xl"
-                type="button"
-              >
-                Create Post
-              </button>
             </div>
 
             <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -329,14 +322,6 @@ export default function StudioPage() {
             </div>
 
             {/* Floating action button */}
-            <button
-              type="button"
-              className="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-primary text-white shadow-[0_18px_60px_rgba(11,31,59,0.30)] text-2xl"
-              aria-label="Create post"
-              title="Create post"
-            >
-              +
-            </button>
           </section>
         </div>
       </div>
