@@ -17,7 +17,7 @@ export function SiteHeader() {
         SCRIBBLED
       </a>
       <nav className="flex gap-8 items-center">
-        <Link href="#" className="nav-link text-on-surface-variant">
+        <Link href="/discover" className="nav-link text-on-surface-variant">
           DISCOVER
         </Link>
         <Link href="/feed" className="nav-link text-on-surface-variant">
