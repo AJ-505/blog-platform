@@ -72,6 +72,32 @@ body {
   font-weight: 500;
   letter-spacing: 0.02em;
   text-decoration: none;
+  position: relative;
+  padding-bottom: 6px;
+  transition: color 140ms ease;
+}
+
+.nav-link:hover {
+  color: #15803d !important; /* green */
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: #15803d;
+  border-radius: 9999px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 140ms ease;
+  pointer-events: none;
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
 }
 
 .search-input {
@@ -128,4 +154,11 @@ body {
   background: #ffffff;
   transform: translateY(-1px);
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
+}
+
+/* Header "Home" pill hover */
+.btn-home:hover {
+  background: #a95162 !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
 }
