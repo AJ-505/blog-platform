@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { SiteHeader } from "@/components/home/SiteHeader";
 import digitalImg from "@/assets/Digital.png";
@@ -113,17 +114,28 @@ function TrendingCard() {
 
 export default function RoommateDramaPage() {
   return (
-    <main className="min-h-screen flex flex-col">
+    <main className="bg-background min-h-screen flex flex-col">
       <SiteHeader />
 
-      <div className="container mx-auto max-w-[1120px] px-4 py-12 flex-1">
+      <div className="container mx-auto max-w-[1120px] px-4 py-10 flex-1">
         <div className="max-w-6xl">
-          <h1 className="text-xl text-on-surface">
-            Roommate <span className="underline decoration-secondary">Drama</span>
-          </h1>
-          <p className="mt-1 text-on-surface-variant">
-            Spilling the tea on dorm life, one post at a time.
-          </p>
+          <div className="flex items-start justify-between gap-6">
+            <div>
+              <h1 className="font-serif text-4xl md:text-5xl font-semibold text-on-surface">
+                Roommate Drama
+              </h1>
+              <p className="mt-3 text-sm text-on-surface-variant">
+                Spilling the tea on dorm life, one post at a time.
+              </p>
+            </div>
+
+            <Link
+              href="/feed"
+              className="mt-2 text-sm font-semibold text-[#A95162] hover:underline"
+            >
+              Back
+            </Link>
+          </div>
 
           <div className="mt-10 grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 items-start">
             <div>

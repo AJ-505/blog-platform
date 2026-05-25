@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { SiteHeader } from "@/components/home/SiteHeader";
 import eventImg from "@/assets/Event.png";
@@ -219,11 +220,20 @@ function CalendarSyncCard() {
 
 export default function UpcomingEventsPage() {
   return (
-    <main className="min-h-screen flex flex-col">
+    <main className="bg-background min-h-screen flex flex-col">
       <SiteHeader />
 
-      <div className="container mx-auto max-w-[1120px] px-4 py-12 flex-1">
+      <div className="container mx-auto max-w-[1120px] px-4 py-10 flex-1">
         <div className="max-w-6xl">
+          <div className="flex items-start justify-end">
+            <Link
+              href="/feed"
+              className="text-sm font-semibold text-[#A95162] hover:underline"
+            >
+              Back
+            </Link>
+          </div>
+
           <FeaturedHero />
 
           <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
