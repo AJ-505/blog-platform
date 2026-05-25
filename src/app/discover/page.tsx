@@ -5,7 +5,9 @@ import { SiteHeader } from "@/components/home/SiteHeader";
 import artImg from "@/assets/Art.png";
 import bookImg from "@/assets/Book.png";
 import eventImg from "@/assets/Event.png";
+import discoverImg from "@/assets/Discover.png";
 import modelImg from "@/assets/Model.png";
+import retroImg from "@/assets/Retro.png";
 
 type DiscoverPost = {
   id: string;
@@ -29,7 +31,7 @@ const POSTS: DiscoverPost[] = [
       "The Secret History of the Quad: Underground Tunnels & Midnight Myths",
     excerpt:
       "Discover the hidden world beneath our feet. For decades, students have whispered about a labyrinth of tunnels connecting the oldest halls of residence...",
-    image: eventImg,
+    image: discoverImg,
     likes: "1.4k",
     comments: "86",
   },
@@ -41,7 +43,7 @@ const POSTS: DiscoverPost[] = [
     title: "Retro Oversized Vibes: Why the 90s are Back on Campus",
     excerpt:
       "Ditch the tight fit. We’re exploring the rise of comfort-first campus aesthetics this fall. From oversized cable knits to baggy corduroy, here's how to nail the look...",
-    image: modelImg,
+    image: retroImg,
     likes: "312",
     comments: "14",
   },
