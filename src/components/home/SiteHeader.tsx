@@ -5,17 +5,13 @@ import Link from "next/link";
 export function SiteHeader() {
   return (
     <header className="header glassmorphism flex items-center justify-between px-8 py-4">
-      <a
-        href="#"
+      <Link
+        href="/"
         className="logo font-bold text-2xl"
         style={{ color: "#0B1F3B" }}
-        onClick={(e) => {
-          e.preventDefault();
-          if (typeof window !== "undefined") window.location.reload();
-        }}
       >
         SCRIBBLED
-      </a>
+      </Link>
       <nav className="flex gap-8 items-center">
         <Link href="/discover" className="nav-link text-on-surface-variant">
           DISCOVER
