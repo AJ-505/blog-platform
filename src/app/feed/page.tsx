@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { SiteHeader } from "@/components/home/SiteHeader";
 
 type FeedPost = {
@@ -36,8 +38,6 @@ const POSTS: FeedPost[] = [
   },
 ];
 
-import Link from "next/link";
-
 function Pill({
   children,
   active,
@@ -48,7 +48,7 @@ function Pill({
   href?: string;
 }) {
   const className = active
-    ? "px-5 py-2 rounded-full bg-primary text-on-primary text-sm font-medium"
+    ? "px-5 py-2 rounded-full bg-[#A95162] text-white text-sm font-medium shadow-sm"
     : "px-5 py-2 rounded-full bg-black/10 text-on-surface text-sm font-medium transition hover:bg-[#F6D3C7] hover:text-primary hover:shadow-sm hover:-translate-y-[1px] border border-transparent hover:border-black/10";
 
   if (href) {
@@ -66,41 +66,194 @@ function Pill({
   );
 }
 
-function PostCard({ post }: { post: FeedPost }) {
+function Stat({ icon, value }: { icon: string; value: string }) {
   return (
-    <article className="rounded-2xl border border-black/10 bg-white/75 backdrop-blur p-6 shadow-sm">
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <h3 className="font-serif text-2xl font-semibold text-primary leading-snug">
-            {post.title}
-          </h3>
-          <p className="mt-2 text-sm text-on-surface-variant leading-relaxed">
-            {post.description}
-          </p>
-          <div className="mt-4 text-sm text-on-surface-variant">
-            {post.author}
+    <div className="flex items-center gap-2 text-sm text-on-surface-variant">
+      <span aria-hidden>{icon}</span>
+      <span className="font-medium text-on-surface">{value}</span>
+    </div>
+  );
+}
+
+function OriginalPostCard({ post }: { post: FeedPost }) {
+  return (
+    <article className="rounded-2xl border border-black/10 bg-white/75 backdrop-blur shadow-sm overflow-hidden">
+      <div className="p-5">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <div className="inline-flex items-center rounded-full bg-black/5 px-3 py-1 text-[11px] font-semibold tracking-wide text-on-surface-variant">
+              ORIGINAL
+            </div>
+
+            <h2 className="mt-4 font-serif text-2xl md:text-3xl font-semibold text-on-surface leading-snug">
+              {post.title}
+            </h2>
+
+            <p className="mt-3 text-sm text-on-surface-variant leading-relaxed">
+              {post.description}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="shrink-0 rounded-full bg-[#A95162] px-5 py-2 text-sm font-medium text-white shadow-sm hover:opacity-90"
+          >
+            Subscribe
+          </button>
+        </div>
+
+        <div className="mt-5 flex items-center justify-between">
+          <div className="text-sm text-on-surface-variant">• {post.author}</div>
+
+          <div className="flex items-center gap-6">
+            <Stat icon="♡" value={`${post.likes}`} />
+            <Stat icon="💬" value={`${post.comments}`} />
           </div>
         </div>
+      </div>
+    </article>
+  );
+}
+
+function NewestCard() {
+  return (
+    <section className="rounded-2xl border border-black/10 bg-white/70 backdrop-blur shadow-sm p-5">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-full bg-black/10" />
+          <div className="min-w-0">
+            <div className="text-xs tracking-wide uppercase text-on-surface-variant">
+              Posted 15hrs ago
+            </div>
+            <div className="mt-1 font-semibold text-on-surface">IKWEJI MAN</div>
+            <div className="mt-1 text-[11px] text-on-surface-variant">
+              POSED THIS
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="rounded-full bg-[#A95162] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-90"
+          >
+            Subscribe
+          </button>
+          <span className="rounded-full bg-black/5 px-3 py-1 text-[11px] font-semibold text-on-surface-variant">
+            Relatable
+          </span>
+        </div>
+      </div>
+
+      <p className="mt-4 text-sm text-on-surface-variant leading-relaxed">
+        “If the library vending machine swallows my last $5 for a Red Bull at 3
+        AM one more time, I’m officially starting a revolution. Who’s with me?”
+      </p>
+
+      <div className="mt-3 text-sm text-secondary font-semibold">
+        #ExamSurvival
+      </div>
+
+      <div className="mt-5 flex items-center gap-2 text-xs text-on-surface-variant">
+        <span className="inline-flex -space-x-2">
+          <span className="w-7 h-7 rounded-full bg-pink-400 ring-2 ring-white" />
+          <span className="w-7 h-7 rounded-full bg-orange-300 ring-2 ring-white" />
+          <span className="w-7 h-7 rounded-full bg-violet-300 ring-2 ring-white" />
+        </span>
+        <span>200 Students checking the vibe</span>
+      </div>
+    </section>
+  );
+}
+
+function WeeklyHotTakeCard() {
+  return (
+    <section className="rounded-2xl border border-black/10 bg-white/75 backdrop-blur shadow-sm p-5">
+      <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-on-surface-variant">
+        <span aria-hidden>⚡</span>
+        <span>WEEKLY HOT TAKE</span>
+      </div>
+
+      <p className="mt-4 font-serif text-xl md:text-2xl font-semibold text-on-surface leading-snug">
+        “Campus coffee tastes like burnt disappointment but we still queue for
+        20 minutes every morning. Why are we like this?”
+      </p>
+
+      <div className="mt-5 space-y-3">
         <button
-          className="text-xs font-semibold text-secondary hover:underline"
           type="button"
+          className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-left text-sm hover:bg-black/5"
+        >
+          I’m addicted
+        </button>
+        <button
+          type="button"
+          className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-left text-sm hover:bg-black/5"
+        >
+          Just here for the vibe
+        </button>
+      </div>
+
+      <div className="mt-5 flex items-center justify-between text-xs text-on-surface-variant">
+        <span>
+          <span className="text-secondary font-semibold">•</span> Campus Daily
+        </span>
+        <button
+          type="button"
+          className="rounded-full bg-[#A95162] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-90"
         >
           Subscribe
         </button>
       </div>
 
-      <div className="mt-6 flex items-center gap-6 text-sm text-on-surface-variant">
-        <div className="flex items-center gap-2">
-          <span aria-hidden>♡</span>
-          <span>
-            {post.likes >= 1000
-              ? `${Math.round(post.likes / 100) / 10}k`
-              : post.likes}
-          </span>
+      <div className="mt-4 flex items-center justify-between text-xs text-on-surface-variant">
+        <span>643 VOTES</span>
+        <button type="button" className="text-[#A95162] font-semibold">
+          See Results
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function TrendingCard({ post }: { post: FeedPost }) {
+  const likes =
+    post.likes >= 1000
+      ? `${Math.round(post.likes / 100) / 10}k`
+      : `${post.likes}`;
+
+  return (
+    <article className="rounded-2xl border border-black/10 bg-white/75 backdrop-blur shadow-sm overflow-hidden">
+      <div className="p-5">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <div className="inline-flex items-center rounded-full bg-black/5 px-3 py-1 text-[11px] font-semibold tracking-wide text-on-surface-variant">
+              TRENDING
+            </div>
+
+            <h3 className="mt-4 font-serif text-2xl font-semibold text-on-surface leading-snug">
+              {post.title}
+            </h3>
+
+            <p className="mt-3 text-sm text-on-surface-variant leading-relaxed">
+              {post.description}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="shrink-0 rounded-full bg-[#A95162] px-5 py-2 text-sm font-medium text-white shadow-sm hover:opacity-90"
+          >
+            Subscribe
+          </button>
         </div>
-        <div className="flex items-center gap-2">
-          <span aria-hidden>💬</span>
-          <span>{post.comments}</span>
+
+        <div className="mt-6 flex items-center justify-between">
+          <div className="text-sm text-on-surface-variant">• {post.author}</div>
+          <div className="flex items-center gap-6">
+            <Stat icon="♡" value={likes} />
+            <Stat icon="💬" value={`${post.comments}`} />
+          </div>
         </div>
       </div>
     </article>
@@ -131,68 +284,19 @@ export default function FeedPage() {
             <Pill active>All sparks</Pill>
             <Pill href="/feed/roommate-drama">Roommate drama</Pill>
             <Pill>Exam survival</Pill>
-            <Pill>Campus fashion</Pill>
+            <Pill href="/feed/campus-fashion">Campus fashion</Pill>
             <Pill href="/feed/upcoming-events">Upcoming events</Pill>
           </div>
 
           <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             <div className="space-y-8">
-              {POSTS.map((p) => (
-                <PostCard key={p.id} post={p} />
-              ))}
+              <OriginalPostCard post={POSTS[0]} />
+              <NewestCard />
             </div>
 
             <aside className="space-y-8">
-              <div className="rounded-2xl bg-secondary/10 border border-black/5 p-8">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-white shadow flex items-center justify-center font-semibold text-primary">
-                    A
-                  </div>
-                  <div>
-                    <div className="text-xs tracking-wide uppercase text-on-surface-variant">
-                      Newest
-                    </div>
-                    <div className="mt-1 font-semibold text-primary">
-                      IKWEJI MAN
-                    </div>
-                    <div className="text-xs text-on-surface-variant">
-                      posted 15hrs ago
-                    </div>
-                    <p className="mt-4 text-on-surface leading-relaxed">
-                      “If the library vending machine swallows my last $5 for a
-                      Red Bull at 3 AM one more time, I’m officially starting a
-                      revolution. Who’s with me?
-                      <br />
-                      <br />
-                      #ExamSurvival”
-                    </p>
-                    <div className="mt-6 flex items-center gap-2 text-sm text-on-surface-variant">
-                      <span className="inline-flex -space-x-2">
-                        <span className="w-7 h-7 rounded-full bg-pink-400 ring-2 ring-white" />
-                        <span className="w-7 h-7 rounded-full bg-orange-300 ring-2 ring-white" />
-                        <span className="w-7 h-7 rounded-full bg-violet-300 ring-2 ring-white" />
-                      </span>
-                      <span>200 Students checking the vibe</span>
-                    </div>
-                  </div>
-                  <div className="ml-auto text-xs text-secondary">
-                    Relatable
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-2xl bg-amber-100/60 border border-black/5 p-8">
-                <div className="text-secondary font-semibold">
-                  Weekly Hot Take
-                </div>
-                <p className="mt-4 text-sm text-on-surface-variant leading-relaxed">
-                  “Campus coffee tastes like burnt disappointment but we still
-                  queue for 20 minutes every morning. Why are we like this?”
-                </p>
-                <div className="mt-3 text-xs text-on-surface-variant">
-                  643 VOTES
-                </div>
-              </div>
+              <WeeklyHotTakeCard />
+              <TrendingCard post={POSTS[1]} />
             </aside>
           </div>
         </div>
