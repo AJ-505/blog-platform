@@ -72,12 +72,14 @@ export default function LoginPage() {
                 >
                   Google
                 </button>
-                <button
-                  type="button"
-                  className="btn-secondary py-3 rounded-xl border border-black/10"
-                >
-                  Apple
-                </button>
+                <Link href="/login/apple-signin">
+                  <button
+                    type="button"
+                    className="btn-secondary py-3 rounded-xl border border-black/10 w-full"
+                  >
+                    Apple
+                  </button>
+                </Link>
               </div>
 
               <p className="pt-4 text-sm text-on-surface-variant text-center">
