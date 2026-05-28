@@ -256,7 +256,20 @@ export default function StudioPage() {
               />
               <SidebarLink label="Published" icon={UploadIcon} href="#" />
               <SidebarLink label="Analytics" icon={ChartIcon} href="#" />
-              <SidebarLink label="Settings" icon={SettingsIcon} href="#" />
+
+              <button
+                onClick={() => window.location.href = "settings"}
+                className="flex items-center gap-3 rounded-x1 px-4 py-3 text-on-surface-variant hover:bg-black/5 w-full"
+              >
+                <SettingsIcon className="w-5 h-5" />
+                <span> Settings</span>
+                </button>  
+
+              <SidebarLink 
+              label="Settings" 
+              icon={SettingsIcon} 
+              href="/settings" 
+              />
             </nav>
           </aside>
 
