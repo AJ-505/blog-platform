@@ -1,164 +1,184 @@
 @import "tailwindcss";
 
-:root {
-  /* Light purple base */
-  --background: #f3f0ff;
-  --foreground: #171717;
-
-  /* Brand (dark blue) */
-  --primary: #0b1f3b;
-  --on-primary: #ffffff;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
-  --color-on-primary: var(--on-primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-instrument: var(--font-instrument);
+  --font-bricolage: var(--font-bricolage);
+  --font-fraunces: var(--font-fraunces);
+  --font-syne: var(--font-syne);
+  --font-garamond: var(--font-garamond);
+  --font-oswald: var(--font-oswald);
 }
 
-/* @media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Base fallback theme - soft dark neutral / elegant */
+    --background: #faf9f6;
+    --foreground: #1c1917;
+    --card: #ffffff;
+    --card-foreground: #1c1917;
+    --popover: #ffffff;
+    --popover-foreground: #1c1917;
+    --primary: #1c1917;
+    --primary-foreground: #faf9f6;
+    --secondary: #f5f5f4;
+    --secondary-foreground: #1c1917;
+    --muted: #f5f5f4;
+    --muted-foreground: #78716c;
+    --accent: #f5f5f4;
+    --accent-foreground: #1c1917;
+    --destructive: #ef4444;
+    --destructive-foreground: #faf9f6;
+    --border: #e7e5e4;
+    --input: #e7e5e4;
+    --ring: #1c1917;
+    --radius: 0.5rem;
   }
-} */
 
-html,
-body {
-  /* Classy light-purple gradient across the entire app */
-  background:
-    radial-gradient(
-      1200px 600px at 15% 10%,
-      rgba(111, 91, 255, 0.14),
-      transparent 55%
-    ),
-    radial-gradient(
-      900px 520px at 85% 20%,
-      rgba(37, 184, 255, 0.1),
-      transparent 50%
-    ),
-    radial-gradient(
-      900px 520px at 80% 85%,
-      rgba(255, 91, 157, 0.08),
-      transparent 55%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.75),
-      rgba(255, 255, 255, 0.35)
-    ),
-    var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  min-height: 100vh;
+  /* Theme 1: Editorial / High Fashion (Minimalist, Serif-heavy, Monocrome with a pop of red) */
+  .theme-editorial {
+    --background: #fdfcf7;
+    --foreground: #0d0c0c;
+    --card: #f5f4ef;
+    --card-foreground: #0d0c0c;
+    --popover: #fdfcf7;
+    --popover-foreground: #0d0c0c;
+    --primary: #9b2226; /* Deep crimson */
+    --primary-foreground: #ffffff;
+    --secondary: #eae8df;
+    --secondary-foreground: #222222;
+    --muted: #eae8df;
+    --muted-foreground: #666666;
+    --accent: #9b2226;
+    --accent-foreground: #ffffff;
+    --border: #d4d0c1;
+    --input: #d4d0c1;
+    --ring: #9b2226;
+    --radius: 0rem; /* Sharp edges */
+  }
+
+  /* Theme 2: Brutalist / Tech (High contrast, intense colors, Bricolage font) */
+  .theme-brutalist {
+    --background: #dfdfdf;
+    --foreground: #111111;
+    --card: #ffffff;
+    --card-foreground: #111111;
+    --popover: #ffffff;
+    --popover-foreground: #111111;
+    --primary: #ff4500; /* Neon Orange */
+    --primary-foreground: #ffffff;
+    --secondary: #111111;
+    --secondary-foreground: #ffffff;
+    --muted: #c8c8c8;
+    --muted-foreground: #444444;
+    --accent: #0000ff; /* Bright Blue */
+    --accent-foreground: #ffffff;
+    --border: #111111;
+    --input: #111111;
+    --ring: #ff4500;
+    --radius: 0.1rem; /* Very slightly rounded */
+  }
+
+  /* Theme 3: Organic / Ethereal (Soft greens, Syne font, rounded) */
+  .theme-organic {
+    --background: #e9f0ea;
+    --foreground: #2c4c3b;
+    --card: #f2f7f3;
+    --card-foreground: #2c4c3b;
+    --popover: #f2f7f3;
+    --popover-foreground: #2c4c3b;
+    --primary: #4a7c59; /* Forest Green */
+    --primary-foreground: #ffffff;
+    --secondary: #d1dfd5;
+    --secondary-foreground: #1b3628;
+    --muted: #d1dfd5;
+    --muted-foreground: #5c7e6a;
+    --accent: #c4a77d; /* Sand */
+    --accent-foreground: #2c4c3b;
+    --border: #bccdc1;
+    --input: #bccdc1;
+    --ring: #4a7c59;
+    --radius: 1.5rem; /* Very rounded */
+  }
+
+  /* Theme 4: Retro / Arcade (Dark mode, neon highlights, Oswald) */
+  .theme-retro {
+    --background: #121212;
+    --foreground: #e0e0e0;
+    --card: #1e1e1e;
+    --card-foreground: #e0e0e0;
+    --popover: #1e1e1e;
+    --popover-foreground: #e0e0e0;
+    --primary: #f9e076; /* Yellow */
+    --primary-foreground: #121212;
+    --secondary: #2c2c2c;
+    --secondary-foreground: #f9e076;
+    --muted: #2c2c2c;
+    --muted-foreground: #999999;
+    --accent: #ff007f; /* Neon Pink */
+    --accent-foreground: #ffffff;
+    --border: #333333;
+    --input: #333333;
+    --ring: #f9e076;
+    --radius: 0.5rem;
+  }
+
+  /* Theme 5: Modern Minimal (High-end tech, Instrument Sans, monochrome with subtle borders) */
+  .theme-minimal {
+    --background: #ffffff;
+    --foreground: #000000;
+    --card: #fafafa;
+    --card-foreground: #000000;
+    --popover: #ffffff;
+    --popover-foreground: #000000;
+    --primary: #000000;
+    --primary-foreground: #ffffff;
+    --secondary: #f0f0f0;
+    --secondary-foreground: #000000;
+    --muted: #f0f0f0;
+    --muted-foreground: #888888;
+    --accent: #eeeeee;
+    --accent-foreground: #000000;
+    --border: #eaeaea;
+    --input: #eaeaea;
+    --ring: #000000;
+    --radius: 0.75rem;
+  }
 }
 
-/* ---------- Component styles (landing page) ---------- */
-
-.header.glassmorphism {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-instrument); /* Default */
+  }
 }
 
-.nav-link {
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  position: relative;
-  padding-bottom: 6px;
-  transition: color 140ms ease;
-}
-
-.nav-link:hover {
-  color: #15803d !important; /* green */
-}
-
-.nav-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 2px;
-  background: #15803d;
-  border-radius: 9999px;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 140ms ease;
-  pointer-events: none;
-}
-
-.nav-link:hover::after {
-  transform: scaleX(1);
-}
-
-.search-input {
-  width: 320px;
-  max-width: 42vw;
-  height: 40px;
-  padding: 0 44px 0 14px;
-  border-radius: 9999px;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: rgba(15, 23, 42, 0.06);
-  outline: none;
-}
-
-.search-input::placeholder {
-  color: rgba(15, 23, 42, 0.55);
-}
-
-.btn-primary,
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  line-height: 1;
-  border-radius: 0.75rem;
-  transition:
-    transform 120ms ease,
-    box-shadow 120ms ease,
-    background-color 120ms ease,
-    border-color 120ms ease,
-    color 120ms ease;
-  user-select: none;
-}
-
-.btn-primary {
-  background: var(--primary);
-  color: var(--on-primary);
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  box-shadow: 0 10px 24px rgba(11, 31, 59, 0.18);
-}
-
-.btn-primary:hover {
-  box-shadow: 0 14px 30px rgba(11, 31, 59, 0.22);
-  transform: translateY(-1px);
-}
-
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.9);
-  color: rgba(15, 23, 42, 0.86);
-  border: 1px solid rgba(15, 23, 42, 0.18);
-}
-
-.btn-secondary:hover {
-  background: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
-}
-
-/* Header "Home" pill hover */
-.btn-home:hover {
-  background: #a95162 !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-}
+/* Base styles for reusable components if they are not converted to Tailwind completely, but we'll try to use standard Tailwind utility classes in our new pages. */
