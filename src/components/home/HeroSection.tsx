@@ -49,12 +49,12 @@ export function HeroSection() {
               <div className="text-[10px] tracking-wide uppercase text-on-surface-variant">
                 Trending Now
               </div>
-              <a
-                href="#"
+              <Link
+                href="/article/sample-article"
                 className="mt-1 block text-primary font-semibold leading-snug"
               >
                 The Art of Minimalist Living
-              </a>
+              </Link>
             </div>
           </div>
         </div>
