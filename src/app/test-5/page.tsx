@@ -67,12 +67,12 @@ export default function MinimalPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: "Modern Stoicism", tag: "Philosophy", img: PhilosophyImg },
-              { title: "Digital Expression", tag: "Visual Arts", img: digitalImg },
-              { title: "Poetic Structures", tag: "Literature", img: poeticImg },
-              { title: "Spatial Design", tag: "Architecture", img: spatialImg },
+              { title: "Modern Stoicism", tag: "Philosophy", img: PhilosophyImg, slug: "modern-stoicism" },
+              { title: "Digital Expression", tag: "Visual Arts", img: digitalImg, slug: "sample-article" },
+              { title: "Poetic Structures", tag: "Literature", img: poeticImg, slug: "poetic-structures" },
+              { title: "Spatial Design", tag: "Architecture", img: spatialImg, slug: "spatial-design" },
             ].map((cat, i) => (
-              <Link href="#" key={i} className="group flex flex-col gap-4">
+              <Link href={`/test-5/article/${cat.slug}`} key={i} className="group flex flex-col gap-4">
                 <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-card relative">
                   <Image 
                     src={cat.img} 
