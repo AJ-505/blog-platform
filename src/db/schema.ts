@@ -1,99 +1,18 @@
-import {
-  pgTable,
-  serial,
-  text,
-  timestamp,
-  integer,
-  primaryKey,
-} from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { pgTable, serial, text, timestamp, boolean } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
-  username: text("username").primaryKey(),
+  id: serial("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  passwordHash: text("password_hash").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
-
-export const follows = pgTable(
-  "follows",
-  {
-    followerId: text("follower_id")
-      .notNull()
-      .references(() => users.username, { onDelete: "cascade" }),
-    followingId: text("following_id")
-      .notNull()
-      .references(() => users.username, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-  },
-  (t) => ({
-    pk: primaryKey({ columns: [t.followerId, t.followingId] }),
-  }),
-);
 
 export const posts = pgTable("posts", {
   id: serial("id").primaryKey(),
-  authorId: text("author_id")
-    .notNull()
-    .references(() => users.username, { onDelete: "cascade" }),
   title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
   content: text("content").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
-});
-
-export const comments = pgTable("comments", {
-  id: serial("id").primaryKey(),
-  postId: integer("post_id")
-    .notNull()
-    .references(() => posts.id, { onDelete: "cascade" }),
-  authorId: text("author_id")
-    .notNull()
-    .references(() => users.username, { onDelete: "cascade" }),
-  content: text("content").notNull(),
+  published: boolean("published").default(false).notNull(),
+  authorId: serial("author_id").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
-
-// Relations (Useful for Drizzle Queries)
-export const usersRelations = relations(users, ({ many }) => ({
-  posts: many(posts),
-  comments: many(comments),
-  followers: many(follows, { relationName: "following" }), // users who follow this user
-  following: many(follows, { relationName: "follower" }), // users this user follows
-}));
-
-export const postsRelations = relations(posts, ({ one, many }) => ({
-  author: one(users, {
-    fields: [posts.authorId],
-    references: [users.username],
-  }),
-  comments: many(comments),
-}));
-
-export const commentsRelations = relations(comments, ({ one }) => ({
-  post: one(posts, {
-    fields: [comments.postId],
-    references: [posts.id],
-  }),
-  author: one(users, {
-    fields: [comments.authorId],
-    references: [users.username],
-  }),
-}));
-
-export const followsRelations = relations(follows, ({ one }) => ({
-  follower: one(users, {
-    fields: [follows.followerId],
-    references: [users.username],
-    relationName: "follower",
-  }),
-  following: one(users, {
-    fields: [follows.followingId],
-    references: [users.username],
-    relationName: "following",
-  }),
-}));
