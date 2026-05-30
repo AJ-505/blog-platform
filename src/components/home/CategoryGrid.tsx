@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image, { StaticImageData } from "next/image";
 import poeticImg from "@/assets/Poetic.png";
 import spatialImg from "@/assets/spatial.png";
@@ -51,9 +52,9 @@ export function CategoryGrid({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {categories.map((cat) => (
-          <a
+          <Link
             key={cat.title}
-            href="#"
+            href="/article/sample-article"
             className="group relative overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition"
           >
             <Image
@@ -76,7 +77,7 @@ export function CategoryGrid({
             </div>
 
             <div className="pointer-events-none absolute inset-0 ring-1 ring-black/5 group-hover:ring-black/10" />
-          </a>
+          </Link>
         ))}
       </div>
     </section>
