@@ -86,7 +86,7 @@ const POSTS: DiscoverPost[] = [
 
 function IconStat({ icon, value }: { icon: string; value: string }) {
   return (
-    <div className="flex items-center gap-2 text-sm ">
+    <div className="flex items-center gap-2 text-sm text-on-surface-variant">
       <span aria-hidden>{icon}</span>
       <span className="font-medium text-on-surface">{value}</span>
     </div>
@@ -95,7 +95,7 @@ function IconStat({ icon, value }: { icon: string; value: string }) {
 
 function PostActions({ likes, comments }: { likes: string; comments: string }) {
   return (
-    <div className="mt-5 flex items-center justify-between ">
+    <div className="mt-5 flex items-center justify-between text-on-surface-variant">
       <div className="flex items-center gap-6">
         <IconStat icon="♡" value={likes} />
         <IconStat icon="💬" value={comments} />
@@ -130,8 +130,8 @@ function PostCard({ post }: { post: DiscoverPost }) {
                 <div className="font-semibold text-on-surface">
                   {post.author}
                 </div>
-                <div className=" ">•</div>
-                <div className="text-sm ">
+                <div className="text-on-surface-variant">•</div>
+                <div className="text-sm text-on-surface-variant">
                   {post.timeAgo}
                 </div>
               </div>
@@ -154,7 +154,7 @@ function PostCard({ post }: { post: DiscoverPost }) {
         <h2 className="mt-4 text-2xl md:text-3xl font-semibold text-on-surface leading-snug">
           {post.title}
         </h2>
-        <p className="mt-3 leading-relaxed">
+        <p className="mt-3 text-on-surface-variant leading-relaxed">
           {post.excerpt}
         </p>
       </div>
@@ -173,7 +173,7 @@ function PostCard({ post }: { post: DiscoverPost }) {
       ) : (
         <div className="px-6 md:px-7 pb-6 md:pb-7">
           <div className="rounded-2xl border border-black/10 bg-white/60 p-5">
-            <div className="text-sm ">
+            <div className="text-sm text-on-surface-variant">
               {post.excerpt}
             </div>
           </div>
@@ -197,7 +197,7 @@ function RecommendedUsers() {
         <div className="font-semibold text-on-surface">Recommended for you</div>
         <button
           type="button"
-          className=" hover:text-primary"
+          className="text-on-surface-variant hover:text-primary"
           aria-label="Close"
         >
           ×
@@ -243,7 +243,7 @@ function TrendingNow() {
             <div className="mt-1 font-medium text-on-surface">
               The Shared Router Incident
             </div>
-            <div className="text-xs ">
+            <div className="text-xs text-on-surface-variant">
               5.4k students talking about this
             </div>
           </div>
@@ -254,7 +254,7 @@ function TrendingNow() {
             <div className="mt-1 font-medium text-on-surface">
               Midnight Coffee Runs
             </div>
-            <div className="text-xs ">
+            <div className="text-xs text-on-surface-variant">
               2.1k mentions today
             </div>
           </div>
@@ -265,7 +265,7 @@ function TrendingNow() {
             <div className="mt-1 font-medium text-on-surface">
               The Library Ghost is Back
             </div>
-            <div className="text-xs ">
+            <div className="text-xs text-on-surface-variant">
               18k spooky whispers
             </div>
           </div>

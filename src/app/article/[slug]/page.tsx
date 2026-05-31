@@ -24,7 +24,7 @@ export default async function ArticlePage({ params }: PageProps) {
         <SiteHeader />
         <div className="flex-1 flex flex-col items-center justify-center p-12">
           <h1 className="text-3xl font-bold">Article not found</h1>
-          <Link href="/" className="mt-4 block hover:underline ">← Back to home</Link>
+          <Link href="/" className="mt-4 block hover:underline text-on-surface-variant">← Back to home</Link>
         </div>
         <SiteFooter />
       </main>
@@ -40,7 +40,7 @@ export default async function ArticlePage({ params }: PageProps) {
       <SiteHeader />
 
       <div className="flex-1 container mx-auto max-w-[800px] px-4 py-16 sm:py-24">
-        <Link href="/" className="inline-flex items-center text-sm font-medium hover:text-primary mb-12 transition-colors">
+        <Link href="/" className="inline-flex items-center text-sm font-medium text-on-surface-variant hover:text-primary mb-12 transition-colors">
           <span aria-hidden className="mr-2">←</span> Back home
         </Link>
         <article className="prose prose-neutral lg:prose-lg max-w-none prose-pre:bg-[#0d1117] prose-pre:border prose-pre:border-border/50">

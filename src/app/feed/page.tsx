@@ -68,7 +68,7 @@ function Pill({
 
 function Stat({ icon, value }: { icon: string; value: string }) {
   return (
-    <div className="flex items-center gap-2 text-sm ">
+    <div className="flex items-center gap-2 text-sm text-on-surface-variant">
       <span aria-hidden>{icon}</span>
       <span className="font-medium text-on-surface">{value}</span>
     </div>
@@ -81,7 +81,7 @@ function OriginalPostCard({ post }: { post: FeedPost }) {
       <div className="p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <div className="inline-flex items-center rounded-full bg-black/5 px-3 py-1 text-[11px] font-semibold tracking-wide ">
+            <div className="inline-flex items-center rounded-full bg-black/5 px-3 py-1 text-[11px] font-semibold tracking-wide text-on-surface-variant">
               ORIGINAL
             </div>
 
@@ -89,7 +89,7 @@ function OriginalPostCard({ post }: { post: FeedPost }) {
               {post.title}
             </h2>
 
-            <p className="mt-3 text-sm leading-relaxed">
+            <p className="mt-3 text-sm text-on-surface-variant leading-relaxed">
               {post.description}
             </p>
           </div>
@@ -103,7 +103,7 @@ function OriginalPostCard({ post }: { post: FeedPost }) {
         </div>
 
         <div className="mt-5 flex items-center justify-between">
-          <div className="text-sm ">• {post.author}</div>
+          <div className="text-sm text-on-surface-variant">• {post.author}</div>
 
           <div className="flex items-center gap-6">
             <Stat icon="♡" value={`${post.likes}`} />
@@ -122,11 +122,11 @@ function NewestCard() {
         <div className="flex items-start gap-3 min-w-0">
           <div className="w-10 h-10 rounded-full bg-black/10" />
           <div className="min-w-0">
-            <div className="text-xs tracking-wide uppercase ">
+            <div className="text-xs tracking-wide uppercase text-on-surface-variant">
               Posted 15hrs ago
             </div>
             <div className="mt-1 font-semibold text-on-surface">IKWEJI MAN</div>
-            <div className="mt-1 text-[11px] ">
+            <div className="mt-1 text-[11px] text-on-surface-variant">
               POSED THIS
             </div>
           </div>
@@ -139,13 +139,13 @@ function NewestCard() {
           >
             Subscribe
           </button>
-          <span className="rounded-full bg-black/5 px-3 py-1 text-[11px] font-semibold ">
+          <span className="rounded-full bg-black/5 px-3 py-1 text-[11px] font-semibold text-on-surface-variant">
             Relatable
           </span>
         </div>
       </div>
 
-      <p className="mt-4 text-sm leading-relaxed">
+      <p className="mt-4 text-sm text-on-surface-variant leading-relaxed">
         “If the library vending machine swallows my last $5 for a Red Bull at 3
         AM one more time, I’m officially starting a revolution. Who’s with me?”
       </p>
@@ -154,7 +154,7 @@ function NewestCard() {
         #ExamSurvival
       </div>
 
-      <div className="mt-5 flex items-center gap-2 text-xs ">
+      <div className="mt-5 flex items-center gap-2 text-xs text-on-surface-variant">
         <span className="inline-flex -space-x-2">
           <span className="w-7 h-7 rounded-full bg-pink-400 ring-2 ring-white" />
           <span className="w-7 h-7 rounded-full bg-orange-300 ring-2 ring-white" />
@@ -169,7 +169,7 @@ function NewestCard() {
 function WeeklyHotTakeCard() {
   return (
     <section className="rounded-2xl border border-black/10 bg-white/75 backdrop-blur shadow-sm p-5">
-      <div className="flex items-center gap-2 text-xs font-semibold tracking-wide ">
+      <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-on-surface-variant">
         <span aria-hidden>⚡</span>
         <span>WEEKLY HOT TAKE</span>
       </div>
@@ -194,7 +194,7 @@ function WeeklyHotTakeCard() {
         </button>
       </div>
 
-      <div className="mt-5 flex items-center justify-between text-xs ">
+      <div className="mt-5 flex items-center justify-between text-xs text-on-surface-variant">
         <span>
           <span className="text-secondary font-semibold">•</span> Campus Daily
         </span>
@@ -206,7 +206,7 @@ function WeeklyHotTakeCard() {
         </button>
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-xs ">
+      <div className="mt-4 flex items-center justify-between text-xs text-on-surface-variant">
         <span>643 VOTES</span>
         <button type="button" className="text-[#A95162] font-semibold">
           See Results
@@ -227,7 +227,7 @@ function TrendingCard({ post }: { post: FeedPost }) {
       <div className="p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <div className="inline-flex items-center rounded-full bg-black/5 px-3 py-1 text-[11px] font-semibold tracking-wide ">
+            <div className="inline-flex items-center rounded-full bg-black/5 px-3 py-1 text-[11px] font-semibold tracking-wide text-on-surface-variant">
               TRENDING
             </div>
 
@@ -235,7 +235,7 @@ function TrendingCard({ post }: { post: FeedPost }) {
               {post.title}
             </h3>
 
-            <p className="mt-3 text-sm leading-relaxed">
+            <p className="mt-3 text-sm text-on-surface-variant leading-relaxed">
               {post.description}
             </p>
           </div>
@@ -249,7 +249,7 @@ function TrendingCard({ post }: { post: FeedPost }) {
         </div>
 
         <div className="mt-6 flex items-center justify-between">
-          <div className="text-sm ">• {post.author}</div>
+          <div className="text-sm text-on-surface-variant">• {post.author}</div>
           <div className="flex items-center gap-6">
             <Stat icon="♡" value={likes} />
             <Stat icon="💬" value={`${post.comments}`} />

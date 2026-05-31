@@ -4,7 +4,7 @@ export function SiteFooter() {
       <div className="container mx-auto grid grid-cols-2 md:grid-cols-5 gap-8">
         <div>
           <h5 className="font-bold mb-2">SCRIBBLED</h5>
-          <p className="text-sm ">
+          <p className="text-sm text-on-surface-variant">
             Elevating voices through premium digital storytelling and curated
             aesthetics.
           </p>

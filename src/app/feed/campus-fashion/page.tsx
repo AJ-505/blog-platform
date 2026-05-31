@@ -43,7 +43,7 @@ function Pill({ children }: { children: React.ReactNode }) {
 
 function Stat({ icon, value }: { icon: string; value: string }) {
   return (
-    <div className="flex items-center gap-2 text-xs ">
+    <div className="flex items-center gap-2 text-xs text-on-surface-variant">
       <span aria-hidden>{icon}</span>
       <span className="font-semibold text-on-surface">{value}</span>
     </div>
@@ -72,7 +72,7 @@ function HeroCard() {
         <h2 className=" text-2xl md:text-3xl font-semibold text-on-surface leading-snug">
           Retro Oversized Vibes: Why the 90s are Back on Campus
         </h2>
-        <p className="mt-3 text-sm leading-relaxed">
+        <p className="mt-3 text-sm text-on-surface-variant leading-relaxed">
           The collegiate aesthetic is shifting. From chunky knits to baggy
           corduroy, the quad looks more like a 1994 film set than ever before.
         </p>
@@ -84,7 +84,7 @@ function HeroCard() {
               <div className="text-sm font-semibold text-on-surface">
                 Maya Rivers
               </div>
-              <div className="text-xs ">Fashion Editor</div>
+              <div className="text-xs text-on-surface-variant">Fashion Editor</div>
             </div>
           </div>
 
@@ -179,7 +179,7 @@ function WeeklyLookbook() {
         </div>
 
         <div className="mt-6 rounded-2xl border border-[#A95162]/30 bg-[#A95162]/5 p-4">
-          <div className="text-xs ">
+          <div className="text-xs text-on-surface-variant">
             “Campus style isn&apos;t about the price tag; it&apos;s about the stories we
             scribble into our daily uniforms.” — Anonymous Senior
           </div>
@@ -201,7 +201,7 @@ export default function CampusFashionPage() {
               <h1 className=" text-4xl md:text-5xl font-semibold text-on-surface">
                 Campus Fashion
               </h1>
-              <p className="mt-3 text-sm ">
+              <p className="mt-3 text-sm text-on-surface-variant">
                 Style pulses from the quad —
               </p>
             </div>

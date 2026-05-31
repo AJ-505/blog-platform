@@ -145,7 +145,7 @@ function SidebarLink({
       className={
         active
           ? "flex items-center gap-3 rounded-xl bg-primary/10 px-4 py-3 text-primary font-medium"
-          : "flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/5"
+          : "flex items-center gap-3 rounded-xl px-4 py-3 text-on-surface-variant hover:bg-black/5"
       }
     >
       <Icon className={active ? "w-5 h-5 text-primary" : "w-5 h-5"} />
@@ -179,7 +179,7 @@ function StatCard({
         className={
           tone === "dark"
             ? "text-xs tracking-wide uppercase text-white/75"
-            : "text-xs tracking-wide uppercase "
+            : "text-xs tracking-wide uppercase text-on-surface-variant"
         }
       >
         {label}
@@ -190,7 +190,7 @@ function StatCard({
           className={
             tone === "dark"
               ? "mt-2 text-sm text-white/80"
-              : "mt-2 text-sm "
+              : "mt-2 text-sm text-on-surface-variant"
           }
         >
           {sub}
@@ -209,9 +209,9 @@ function ContentRow({ title, meta }: { title: string; meta: string }) {
       <div className="w-12 h-12 rounded-xl bg-black/10" />
       <div className="min-w-0">
         <div className="font-medium text-on-surface truncate">{title}</div>
-        <div className="text-sm ">{meta}</div>
+        <div className="text-sm text-on-surface-variant">{meta}</div>
       </div>
-      <div className="ml-auto flex items-center gap-4 ">
+      <div className="ml-auto flex items-center gap-4 text-on-surface-variant">
         <button type="button" className="hover:text-primary">
           ✎
         </button>
@@ -237,7 +237,7 @@ export default function StudioPage() {
           <aside className="rounded-2xl border border-black/10 bg-white/70 backdrop-blur shadow-sm p-5 sticky top-6">
             <div className="pb-4 border-b border-black/10">
               <div className="font-semibold text-primary">Creator Studio</div>
-              <div className="text-xs tracking-wide uppercase mt-1">
+              <div className="text-xs tracking-wide uppercase text-on-surface-variant mt-1">
                 Managing SCRIBBLED content
               </div>
             </div>
@@ -267,7 +267,7 @@ export default function StudioPage() {
                 <h1 className="text-4xl md:text-5xl font-semibold text-primary">
                   Welcome back, Elena
                 </h1>
-                <p className="mt-2 ">
+                <p className="mt-2 text-on-surface-variant">
                   Your visionary insights reached 12.4k new readers this week.
                 </p>
               </div>
@@ -301,7 +301,7 @@ export default function StudioPage() {
                     </div>
                     <a
                       href="#"
-                      className="text-sm font-medium hover:text-primary"
+                      className="text-sm font-medium text-on-surface-variant hover:text-primary"
                     >
                       View All →
                     </a>

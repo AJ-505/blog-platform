@@ -41,7 +41,7 @@ export function CategoryGrid({
 
         <a
           href="#"
-          className="inline-flex items-center gap-2 text-sm font-medium hover:text-primary transition"
+          className="inline-flex items-center gap-2 text-sm font-medium text-on-surface-variant hover:text-primary transition"
         >
           SEE ALL TOPICS
           <span aria-hidden className="text-lg leading-none">

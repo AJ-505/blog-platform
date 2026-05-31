@@ -15,13 +15,13 @@ export default function LoginPage() {
             <h1 className="text-4xl md:text-5xl font-semibold text-primary text-center">
               Welcome Back
             </h1>
-            <p className="mt-3 text-sm text-center">
+            <p className="mt-3 text-sm text-on-surface-variant text-center">
               Continue your creative journey with SCRIBBLED.
             </p>
 
             <form className="mt-10 space-y-6">
               <div>
-                <label className="block text-xs tracking-wide uppercase mb-2">
+                <label className="block text-xs tracking-wide uppercase text-on-surface-variant mb-2">
                   Email address
                 </label>
                 <input
@@ -33,7 +33,7 @@ export default function LoginPage() {
 
               <div>
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs tracking-wide uppercase mb-2">
+                  <label className="block text-xs tracking-wide uppercase text-on-surface-variant mb-2">
                     Password
                   </label>
                   <a
@@ -59,7 +59,7 @@ export default function LoginPage() {
 
               <div className="flex items-center gap-4 pt-2">
                 <div className="h-px flex-1 bg-black/10" />
-                <div className="text-xs tracking-wide uppercase ">
+                <div className="text-xs tracking-wide uppercase text-on-surface-variant">
                   or continue with
                 </div>
                 <div className="h-px flex-1 bg-black/10" />
@@ -80,7 +80,7 @@ export default function LoginPage() {
                 </button>
               </div>
 
-              <p className="pt-4 text-sm text-center">
+              <p className="pt-4 text-sm text-on-surface-variant text-center">
                 New to SCRIBBLED?{" "}
                 <Link
                   href="/signup"
