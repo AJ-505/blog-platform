@@ -41,20 +41,36 @@ export async function POST(req: Request) {
   // result.data is now fully typed as LoginBody — no casting needed!
   const { email, password }: LoginBody = result.data;
 
-  const [user] = await db.select().from(users).where(eq(users.email, email));
+  try {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
 
-  if (!user) {
-    return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+    // Use the same response whether the email or the password is wrong so
+    // we don't leak which accounts exist.
+    if (!user) {
+      return NextResponse.json(
+        { error: "Invalid credentials" },
+        { status: 401 },
+      );
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        { error: "Invalid credentials" },
+        { status: 401 },
+      );
+    }
+
+    return NextResponse.json({
+      message: "Login successful",
+      user: { username: user.username, name: user.name, email: user.email },
+    });
+  } catch (err) {
+    console.error("POST /api/login failed:", err);
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
-
-  const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
-
-  if (!isPasswordValid) {
-    return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
-  }
-
-  return NextResponse.json({
-    message: "Login successful",
-    user: { username: user.username, name: user.name, email: user.email },
-  });
 }

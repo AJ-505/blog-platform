@@ -35,27 +35,38 @@ export async function PATCH(req: Request) {
     )
   }
 
-  // result.data is now fully typed as EditBody 
+  // result.data is now fully typed as EditBody
   const { authorId, postId, title, content }: EditBody = result.data
 
-  
-  const [post] = await db.select().from(posts).where(eq(posts.id, postId))
+  try {
+    const [post] = await db.select().from(posts).where(eq(posts.id, postId))
 
-  if (!post) {
-    return NextResponse.json({ error: "Post not found" }, { status: 404 })
-  }
+    if (!post) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 })
+    }
 
-  if (post.authorId !== authorId) {
+    if (post.authorId !== authorId) {
+      return NextResponse.json(
+        { error: "Only authors can edit their posts" },
+        { status: 403 },
+      )
+    }
+
+    const [editedPost] = await db
+      .update(posts)
+      .set({ title, content, updatedAt: new Date() })
+      .where(eq(posts.id, postId))
+      .returning()
+
     return NextResponse.json(
-        { error: "Only authors can edit their posts"},
-        { status: 403 }
+      { message: "Post edited successfully", post: editedPost },
+      { status: 200 },
+    )
+  } catch (err) {
+    console.error("PATCH /api/posts/edit failed:", err)
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
     )
   }
-  const [editedPost] = await db.update(posts).set({title, content})
-                        .where(eq(posts.id, postId)).returning()
-
-  return NextResponse.json({
-    message: "Post edited successfully",
-    post: editedPost,
-  }, {status: 200})
 }

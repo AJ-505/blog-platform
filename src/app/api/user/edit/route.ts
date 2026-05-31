@@ -2,6 +2,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
 
 const editProfileSchema = z.object({
   username: z.string().min(1, { message: "username cannot be empty" }),
@@ -10,12 +11,18 @@ const editProfileSchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const body = await req.json();
+  let body: unknown;
+
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
 
   const result = editProfileSchema.safeParse(body);
 
   if (!result.success) {
-    return Response.json(
+    return NextResponse.json(
       {
         error: "Invalid input",
         details: result.error.flatten().fieldErrors,
@@ -26,16 +33,26 @@ export async function POST(req: Request) {
 
   const { username, name, email } = result.data;
 
-  await db
-    .update(users)
-    .set({
-      name,
-      email,
-    })
-    .where(eq(users.username, username));
+  try {
+    const [updated] = await db
+      .update(users)
+      .set({ name, email })
+      .where(eq(users.username, username))
+      .returning({ username: users.username });
 
-  return Response.json(
-    { message: "Profile updated successfully" },
-    { status: 200 },
-  );
+    if (!updated) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(
+      { message: "Profile updated successfully" },
+      { status: 200 },
+    );
+  } catch (err) {
+    console.error("POST /api/user/edit failed:", err);
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
+  }
 }

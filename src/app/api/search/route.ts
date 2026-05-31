@@ -27,14 +27,22 @@ export async function POST(req: Request) {
 
   const { query } = result.data;
 
-  const matchedUsers = await db
-    .select({
-      username: users.username,
-      name: users.name,
-      email: users.email,
-    })
-    .from(users)
-    .where(ilike(users.name, `%${query}%`));
+  try {
+    const matchedUsers = await db
+      .select({
+        username: users.username,
+        name: users.name,
+        email: users.email,
+      })
+      .from(users)
+      .where(ilike(users.name, `%${query}%`));
 
-  return Response.json({ users: matchedUsers }, { status: 200 });
+    return Response.json({ users: matchedUsers }, { status: 200 });
+  } catch (err) {
+    console.error("POST /api/search failed:", err);
+    return Response.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
+  }
 }

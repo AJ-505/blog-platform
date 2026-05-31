@@ -12,7 +12,7 @@ export function CTASection() {
         <button className="btn-secondary bg-secondary text-on-secondary px-6 py-3 rounded">
           Join the Community
         </button>
-        <button className="inline-flex items-center justify-center border border-white px-8 py-3 rounded-full bg-transparent text-white hover:bg-white hover:text-primary transition-colors font-medium">
+        <button className="btn-cta-outline px-8 py-3 rounded-full font-medium">
           Explore Membership
         </button>
       </div>

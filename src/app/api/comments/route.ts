@@ -30,13 +30,21 @@ export async function POST(req: Request) {
 
     const { postId } = result.data;
 
-    const postComments = await db
-        .select()
-        .from(comments)
-        .where(eq(comments.postId, postId));
+    try {
+        const postComments = await db
+            .select()
+            .from(comments)
+            .where(eq(comments.postId, postId));
 
-    return Response.json(
-        {comments: postComments},
-        {status: 200}
-    );
+        return Response.json(
+            {comments: postComments},
+            {status: 200}
+        );
+    } catch (err) {
+        console.error("POST /api/comments failed:", err);
+        return Response.json(
+            {error: "Something went wrong. Please try again."},
+            {status: 500}
+        );
+    }
 }

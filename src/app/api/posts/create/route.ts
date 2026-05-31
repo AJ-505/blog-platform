@@ -1,6 +1,7 @@
-import { trim, z } from "zod"
+import { z } from "zod"
 import { db } from "@/db"
-import { posts } from "@/db/schema"
+import { posts, users } from "@/db/schema"
+import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 // Define the schema once — validation + types in one place
@@ -33,19 +34,37 @@ export async function POST(req: Request) {
     )
   }
 
-  // result.data is now fully typed as CreateBody 
+  // result.data is now fully typed as CreateBody
   const { authorId, title, content }: CreateBody = result.data
 
-  
-  const [newPost] = await db.insert(posts).values({authorId, title, content}).returning()
+  try {
+    const [author] = await db
+      .select({ username: users.username })
+      .from(users)
+      .where(eq(users.username, authorId))
 
-  if (!newPost) {
-    return NextResponse.json({ error: "Failed to create post" }, { status: 500 })
+    if (!author) {
+      return NextResponse.json({ error: "Author not found" }, { status: 404 })
+    }
+
+    const [newPost] = await db
+      .insert(posts)
+      .values({ authorId, title, content })
+      .returning()
+
+    if (!newPost) {
+      return NextResponse.json({ error: "Failed to create post" }, { status: 500 })
+    }
+
+    return NextResponse.json(
+      { message: "Post created successfully", post: newPost },
+      { status: 201 },
+    )
+  } catch (err) {
+    console.error("POST /api/posts/create failed:", err)
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    )
   }
-
-
-  return NextResponse.json({
-    message: "Post created successfully",
-    post: newPost,
-  }, {status: 201})
 }
