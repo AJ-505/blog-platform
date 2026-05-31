@@ -135,14 +135,14 @@ function EventTile({
           {event.title}
         </div>
         {event.location ? (
-          <div className="mt-2 text-sm text-on-surface-variant">
+          <div className="mt-2 text-sm ">
             <span aria-hidden className="mr-2">
               ⌁
             </span>
             {event.location}
           </div>
         ) : null}
-        <p className="mt-3 text-sm text-on-surface-variant leading-relaxed">
+        <p className="mt-3 text-sm leading-relaxed">
           {event.description}
         </p>
 
@@ -173,7 +173,7 @@ function RecommendedCard() {
             <div className="font-medium text-on-surface">
               Hackathon Prep Night
             </div>
-            <div className="text-sm text-on-surface-variant">
+            <div className="text-sm ">
               Tomorrow • 7:00 PM
             </div>
           </div>
@@ -187,7 +187,7 @@ function RecommendedCard() {
         <div className="flex items-center justify-between rounded-2xl border border-black/10 bg-white/60 p-4">
           <div>
             <div className="font-medium text-on-surface">Improv Workshop</div>
-            <div className="text-sm text-on-surface-variant">
+            <div className="text-sm ">
               Friday • 4:30 PM
             </div>
           </div>
@@ -207,7 +207,7 @@ function CalendarSyncCard() {
   return (
     <section className="rounded-3xl border border-black/10 bg-white/80 shadow-sm p-7">
       <div className="text-lg font-semibold text-primary">Calendar Sync</div>
-      <p className="mt-2 text-sm text-on-surface-variant leading-relaxed">
+      <p className="mt-2 text-sm leading-relaxed">
         Never miss a deadline or mixer. Sync SCRIBBLED with your school
         calendar.
       </p>

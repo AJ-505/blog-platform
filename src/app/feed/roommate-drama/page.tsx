@@ -6,7 +6,7 @@ import digitalImg from "@/assets/Digital.png";
 
 function Stat({ icon, value }: { icon: string; value: number }) {
   return (
-    <div className="flex items-center gap-2 text-sm text-on-surface-variant">
+    <div className="flex items-center gap-2 text-sm ">
       <span aria-hidden>{icon}</span>
       <span>{value}</span>
     </div>
@@ -20,7 +20,7 @@ function PostCardLarge() {
         <div className="w-10 h-10 rounded-full bg-black/10" />
         <div className="min-w-0 flex-1">
           <div className="font-medium text-on-surface">Sarah K.</div>
-          <div className="text-sm text-on-surface-variant">
+          <div className="text-sm ">
             2 hours ago • South Hall
           </div>
         </div>
@@ -30,7 +30,7 @@ function PostCardLarge() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 md:grid-cols-[1fr_220px] gap-6 items-center">
-        <p className="text-on-surface-variant leading-relaxed">
+        <p className=" leading-relaxed">
           I marked my Oatly with a sharpie. I even drew a little “Sarah’s Milk”
           cow on it. ✨ Yet, here I am, pouring my cereal only to find a single,
           lonely tablespoon left at the bottom. To whoever drank my $7 oat milk:
@@ -48,7 +48,7 @@ function PostCardLarge() {
       <div className="mt-6 flex items-center gap-6">
         <Stat icon="♡" value={124} />
         <Stat icon="💬" value={42} />
-        <div className="ml-auto text-on-surface-variant">↗</div>
+        <div className="ml-auto ">↗</div>
       </div>
     </article>
   );
@@ -75,12 +75,12 @@ function PostCardSmall({
         <div className="w-10 h-10 rounded-full bg-black/10" />
         <div>
           <div className="font-medium text-on-surface">{author}</div>
-          <div className="text-sm text-on-surface-variant">{meta}</div>
+          <div className="text-sm ">{meta}</div>
         </div>
       </div>
 
       <h3 className="mt-5 font-medium text-secondary">{title}</h3>
-      <p className="mt-3 text-on-surface-variant leading-relaxed">{body}</p>
+      <p className="mt-3 leading-relaxed">{body}</p>
 
       <div className="mt-6 flex items-center gap-6">
         <Stat icon="♡" value={likes} />
@@ -124,7 +124,7 @@ export default function RoommateDramaPage() {
               <h1 className=" text-4xl md:text-5xl font-semibold text-on-surface">
                 Roommate Drama
               </h1>
-              <p className="mt-3 text-sm text-on-surface-variant">
+              <p className="mt-3 text-sm ">
                 Spilling the tea on dorm life, one post at a time.
               </p>
             </div>

@@ -53,7 +53,7 @@ function StatusPill({ status }: { status: BlogItem["status"] }) {
   const cls =
     status === "PUBLISHED"
       ? "bg-emerald-100 text-emerald-700"
-      : "bg-black/10 text-on-surface-variant";
+      : "bg-black/10 ";
   return (
     <div
       className={`inline-flex items-center px-6 py-2 rounded-full text-sm font-semibold ${cls}`}
@@ -66,7 +66,7 @@ function StatusPill({ status }: { status: BlogItem["status"] }) {
 function Stat({ icon, value }: { icon: string; value?: string }) {
   if (!value) return null;
   return (
-    <div className="flex items-center gap-2 text-sm text-on-surface-variant">
+    <div className="flex items-center gap-2 text-sm ">
       <span aria-hidden>{icon}</span>
       <span className="font-medium text-on-surface">{value}</span>
     </div>
@@ -89,7 +89,7 @@ export default function ManageBlogsPage() {
           <h1 className="mt-4 text-5xl md:text-6xl font-semibold text-on-surface">
             Manage your blogs
           </h1>
-          <p className="mt-4 text-lg text-on-surface-variant max-w-3xl">
+          <p className="mt-4 text-lg max-w-3xl">
             Refine your stories, check your reach, and keep the campus buzzing
             with latest tea
           </p>
@@ -130,7 +130,7 @@ export default function ManageBlogsPage() {
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-6">
                       <StatusPill status={b.status} />
-                      <div className="text-on-surface-variant font-semibold">
+                      <div className=" font-semibold">
                         {b.dateLabel}
                       </div>
                     </div>

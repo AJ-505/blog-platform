@@ -74,6 +74,10 @@ body {
   min-height: 100vh;
 }
 
+button {
+  cursor: pointer;
+}
+
 /* ---------- Component styles (landing page) ---------- */
 
 .header.glassmorphism {
@@ -140,6 +144,7 @@ body {
   gap: 0.5rem;
   line-height: 1;
   border-radius: 0.75rem;
+  cursor: pointer;
   transition:
     transform 120ms ease,
     box-shadow 120ms ease,

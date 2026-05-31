@@ -11,7 +11,7 @@ export default function SignupPage() {
         <div className="logo font-bold text-2xl" style={{ color: "#0B1F3B" }}>
           SCRIBBLED
         </div>
-        <div className="flex items-center gap-3 text-sm text-on-surface-variant">
+        <div className="flex items-center gap-3 text-sm ">
           <span className="tracking-wide uppercase">Already a member?</span>
           <Link href="/login" className="font-semibold text-on-surface">
             Sign in
@@ -27,7 +27,7 @@ export default function SignupPage() {
               <br />
               together.
             </h1>
-            <p className="mt-6 text-base md:text-lg text-on-surface-variant max-w-xl leading-relaxed">
+            <p className="mt-6 text-base md:text-lg max-w-xl leading-relaxed">
               Join a global community of thinkers, writers, and creators
               dedicated to the pursuit of intellectual depth and aesthetic
               clarity.
@@ -43,7 +43,7 @@ export default function SignupPage() {
                     <div className=" text-xl font-semibold text-primary">
                       Exclusive Archives
                     </div>
-                    <div className="mt-1 text-sm text-on-surface-variant leading-relaxed">
+                    <div className="mt-1 text-sm leading-relaxed">
                       Access a curated library of profound literary works and
                       modern critiques.
                     </div>
@@ -60,7 +60,7 @@ export default function SignupPage() {
                     <div className=" text-xl font-semibold text-primary">
                       Creator Studio
                     </div>
-                    <div className="mt-1 text-sm text-on-surface-variant leading-relaxed">
+                    <div className="mt-1 text-sm leading-relaxed">
                       Professional tools to draft, edit, and publish your
                       visionary content.
                     </div>
@@ -87,13 +87,13 @@ export default function SignupPage() {
               <h2 className="text-3xl md:text-4xl font-semibold text-primary">
                 Create your account
               </h2>
-              <p className="mt-2 text-sm text-on-surface-variant">
+              <p className="mt-2 text-sm ">
                 Start your journey into the SCRIBBLED ecosystem today.
               </p>
 
               <form className="mt-8 space-y-5">
                 <div>
-                  <label className="block text-xs tracking-wide uppercase text-on-surface-variant mb-2">
+                  <label className="block text-xs tracking-wide uppercase mb-2">
                     Full name
                   </label>
                   <input
@@ -103,7 +103,7 @@ export default function SignupPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs tracking-wide uppercase text-on-surface-variant mb-2">
+                  <label className="block text-xs tracking-wide uppercase mb-2">
                     Email address
                   </label>
                   <input
@@ -114,7 +114,7 @@ export default function SignupPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs tracking-wide uppercase text-on-surface-variant mb-2">
+                  <label className="block text-xs tracking-wide uppercase mb-2">
                     Password
                   </label>
                   <div className="relative">
@@ -125,7 +125,7 @@ export default function SignupPage() {
                     />
                     <button
                       type="button"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 "
                       aria-label="Show password"
                     >
                       ◦
@@ -140,7 +140,7 @@ export default function SignupPage() {
                   Create Account
                 </button>
 
-                <p className="text-xs text-on-surface-variant text-center">
+                <p className="text-xs text-center">
                   By creating an account, you agree to our{" "}
                   <a href="#" className="underline">
                     Terms of Service

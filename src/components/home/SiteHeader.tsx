@@ -12,20 +12,17 @@ export function SiteHeader() {
       >
         Scribbled
       </Link>
-      <nav className="flex gap-8 items-center">
-        <Link href="/discover" className="nav-link text-on-surface-variant">
+      <nav className="flex gap-5 items-center">
+        <Link href="/discover" className="nav-link font-semibold">
           Discover
         </Link>
-        <Link href="/feed" className="nav-link  text-on-surface-variant">
+        <Link href="/feed" className="nav-link font-semibold">
           Feed
         </Link>
-        <Link
-          href="/studio/create-post"
-          className="nav-link  text-on-surface-variant"
-        >
+        <Link href="/studio/create-post" className="nav-link font-semibold">
           Creators
         </Link>
-        <Link href="/studio" className="nav-link  text-on-surface-variant">
+        <Link href="/studio" className="nav-link font-semibold">
           Studio
         </Link>
       </nav>

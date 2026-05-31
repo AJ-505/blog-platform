@@ -11,7 +11,7 @@ export function HeroSection() {
           <span className="block text-primary">Share Your Story</span>
           <span className="block text-primary">with the World</span>
         </h1>
-        <p className="mt-6 text-base md:text-lg text-on-surface-variant max-w-xl leading-relaxed">
+        <p className="mt-6 text-base md:text-lg max-w-xl leading-relaxed">
           A premium digital space for visionaries and thinkers. Publish
           beautiful articles, build a community, and elevate your creative voice
           with our articulate publishing tools.
@@ -46,7 +46,7 @@ export function HeroSection() {
           <div className="flex items-start gap-2">
             <span className="mt-[6px] inline-block w-2 h-2 rounded-full bg-secondary" />
             <div>
-              <div className="text-[10px] tracking-wide uppercase text-on-surface-variant">
+              <div className="text-[10px] tracking-wide uppercase ">
                 Trending Now
               </div>
               <Link

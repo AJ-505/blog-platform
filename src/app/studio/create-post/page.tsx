@@ -58,7 +58,7 @@ function RadioRow({
         </div>
         <div className="flex-1">
           <div className="font-medium text-on-surface">{title}</div>
-          <div className="text-sm text-on-surface-variant">{subtitle}</div>
+          <div className="text-sm ">{subtitle}</div>
         </div>
         <div
           className={
@@ -121,7 +121,7 @@ export default function CreatePostPage() {
             aria-label="Post title"
           />
 
-          <div className="mt-6 flex items-center gap-6 text-on-surface-variant">
+          <div className="mt-6 flex items-center gap-6 ">
             <div className="flex items-center gap-2">
               <span aria-hidden>📅</span>
               <span>{dateLabel}</span>
@@ -144,17 +144,17 @@ export default function CreatePostPage() {
             <div className="text-2xl font-semibold text-primary">
               Post Settings
             </div>
-            <div className="text-sm text-on-surface-variant">
+            <div className="text-sm ">
               Fine-tune your publication
             </div>
           </div>
 
           <div className="p-8 space-y-10">
             <section>
-              <div className="text-xs tracking-wide uppercase text-on-surface-variant font-semibold">
+              <div className="text-xs tracking-wide uppercase font-semibold">
                 Featured image
               </div>
-              <div className="mt-4 rounded-2xl bg-[#E8F0FF] border border-black/10 h-[160px] flex flex-col items-center justify-center text-on-surface-variant">
+              <div className="mt-4 rounded-2xl bg-[#E8F0FF] border border-black/10 h-[160px] flex flex-col items-center justify-center ">
                 <div className="w-10 h-10 rounded-xl border border-black/20 flex items-center justify-center">
                   ▣
                 </div>
@@ -165,7 +165,7 @@ export default function CreatePostPage() {
             </section>
 
             <section>
-              <div className="text-xs tracking-wide uppercase text-on-surface-variant font-semibold">
+              <div className="text-xs tracking-wide uppercase font-semibold">
                 Categories & tags
               </div>
               <div className="mt-4 flex flex-wrap gap-3">
@@ -185,7 +185,7 @@ export default function CreatePostPage() {
             </section>
 
             <section>
-              <div className="text-xs tracking-wide uppercase text-on-surface-variant font-semibold">
+              <div className="text-xs tracking-wide uppercase font-semibold">
                 Visibility & access
               </div>
               <div className="mt-4 space-y-4">
