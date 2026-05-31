@@ -10,27 +10,27 @@ export function SiteHeader() {
         className="logo font-bold text-2xl"
         style={{ color: "#0B1F3B" }}
       >
-        SCRIBBLED
+        Scribbled
       </Link>
       <nav className="flex gap-8 items-center">
         <Link href="/discover" className="nav-link text-on-surface-variant">
-          DISCOVER
+          Discover
         </Link>
-        <Link href="/feed" className="nav-link text-on-surface-variant">
-          FEED
+        <Link href="/feed" className="nav-link  text-on-surface-variant">
+          Feed
         </Link>
         <Link
           href="/studio/create-post"
-          className="nav-link text-on-surface-variant"
+          className="nav-link  text-on-surface-variant"
         >
-          CREATORS
+          Creators
         </Link>
-        <Link href="/studio" className="nav-link text-on-surface-variant">
-          STUDIO
+        <Link href="/studio" className="nav-link  text-on-surface-variant">
+          Studio
         </Link>
       </nav>
       <div className="flex items-center gap-4">
-        <input className="search-input" placeholder="search for trends" />
+        <input className="search-input" placeholder="Search for trends" />
         <Link
           href="/"
           className="btn-secondary btn-home rounded-full px-4 py-2"

@@ -184,7 +184,7 @@ function StatCard({
       >
         {label}
       </div>
-      <div className="mt-3 text-4xl font-serif font-semibold">{value}</div>
+      <div className="mt-3 text-4xl font-semibold">{value}</div>
       {sub ? (
         <div
           className={
@@ -264,7 +264,7 @@ export default function StudioPage() {
           <section>
             <div className="flex items-start justify-between gap-6">
               <div>
-                <h1 className="text-4xl md:text-5xl font-serif font-semibold text-primary">
+                <h1 className="text-4xl md:text-5xl font-semibold text-primary">
                   Welcome back, Elena
                 </h1>
                 <p className="mt-2 text-on-surface-variant">
@@ -296,7 +296,7 @@ export default function StudioPage() {
               <div className="lg:col-span-2">
                 <div className="rounded-2xl border border-black/10 bg-white/80 backdrop-blur shadow-sm p-6">
                   <div className="flex items-center justify-between gap-4">
-                    <div className="text-2xl font-serif font-semibold text-primary">
+                    <div className="text-2xl font-semibold text-primary">
                       Content Performance
                     </div>
                     <a

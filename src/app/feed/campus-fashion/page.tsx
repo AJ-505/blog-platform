@@ -69,7 +69,7 @@ function HeroCard() {
       </div>
 
       <div className="p-6">
-        <h2 className="font-serif text-2xl md:text-3xl font-semibold text-on-surface leading-snug">
+        <h2 className=" text-2xl md:text-3xl font-semibold text-on-surface leading-snug">
           Retro Oversized Vibes: Why the 90s are Back on Campus
         </h2>
         <p className="mt-3 text-sm text-on-surface-variant leading-relaxed">
@@ -169,7 +169,7 @@ function WeeklyLookbook() {
         </div>
       </div>
       <div className="p-6">
-        <div className="font-serif text-xl font-semibold text-on-surface">
+        <div className=" text-xl font-semibold text-on-surface">
           The “Library Aesthetic” Staples
         </div>
 
@@ -198,7 +198,7 @@ export default function CampusFashionPage() {
         <div className="max-w-3xl">
           <div className="flex items-start justify-between gap-6">
             <div>
-              <h1 className="font-serif text-4xl md:text-5xl font-semibold text-on-surface">
+              <h1 className=" text-4xl md:text-5xl font-semibold text-on-surface">
                 Campus Fashion
               </h1>
               <p className="mt-3 text-sm text-on-surface-variant">

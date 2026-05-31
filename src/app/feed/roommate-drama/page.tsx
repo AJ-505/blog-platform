@@ -94,7 +94,7 @@ function TrendingCard() {
   return (
     <aside className="rounded-2xl bg-[#7A3B44] text-white shadow-sm p-7">
       <div className="text-sm font-semibold tracking-wide">TRENDING NOW</div>
-      <div className="mt-4 text-xl font-serif font-semibold">
+      <div className="mt-4 text-xl font-semibold">
         The Shared Router Incident
       </div>
       <p className="mt-4 text-white/80 leading-relaxed">
@@ -121,7 +121,7 @@ export default function RoommateDramaPage() {
         <div className="max-w-6xl">
           <div className="flex items-start justify-between gap-6">
             <div>
-              <h1 className="font-serif text-4xl md:text-5xl font-semibold text-on-surface">
+              <h1 className=" text-4xl md:text-5xl font-semibold text-on-surface">
                 Roommate Drama
               </h1>
               <p className="mt-3 text-sm text-on-surface-variant">

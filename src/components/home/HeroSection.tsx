@@ -7,7 +7,7 @@ export function HeroSection() {
   return (
     <section className="hero grid grid-cols-1 md:grid-cols-2 gap-12 items-center py-14">
       <div className="flex flex-col">
-        <h1 className="mt-4 text-5xl md:text-6xl leading-[1.05] font-serif font-semibold">
+        <h1 className="mt-4 text-5xl md:text-6xl leading-[1.05] font-semibold">
           <span className="block text-primary">Share Your Story</span>
           <span className="block text-primary">with the World</span>
         </h1>
@@ -24,8 +24,8 @@ export function HeroSection() {
           >
             Get Started
           </Link>
-          <button className="btn-secondary px-7 py-3 rounded-lg font-medium border">
-            View Showcases
+          <button className="cursor-pointer btn-secondary px-7 py-3 rounded-lg font-medium border">
+            <Link href="/discover">View Showcases</Link>
           </button>
         </div>
       </div>

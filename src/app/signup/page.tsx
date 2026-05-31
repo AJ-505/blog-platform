@@ -22,7 +22,7 @@ export default function SignupPage() {
       <div className="container mx-auto max-w-[1120px] px-4 py-14">
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <div className="pr-0 lg:pr-10">
-            <h1 className="text-5xl md:text-6xl leading-[1.05] font-serif font-semibold text-primary">
+            <h1 className="text-5xl md:text-6xl leading-[1.05] font-semibold text-primary">
               Articulating the visionary,
               <br />
               together.
@@ -40,7 +40,7 @@ export default function SignupPage() {
                     ▣
                   </div>
                   <div>
-                    <div className="font-serif text-xl font-semibold text-primary">
+                    <div className=" text-xl font-semibold text-primary">
                       Exclusive Archives
                     </div>
                     <div className="mt-1 text-sm text-on-surface-variant leading-relaxed">
@@ -57,7 +57,7 @@ export default function SignupPage() {
                     ✦
                   </div>
                   <div>
-                    <div className="font-serif text-xl font-semibold text-primary">
+                    <div className=" text-xl font-semibold text-primary">
                       Creator Studio
                     </div>
                     <div className="mt-1 text-sm text-on-surface-variant leading-relaxed">
@@ -75,7 +75,7 @@ export default function SignupPage() {
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
-                <div className="absolute bottom-4 left-5 text-white/95 text-sm font-serif drop-shadow">
+                <div className="absolute bottom-4 left-5 text-white/95 text-sm drop-shadow">
                   “The word is the architecture of the soul.”
                 </div>
               </div>
@@ -84,7 +84,7 @@ export default function SignupPage() {
 
           <div className="lg:pl-10">
             <div className="rounded-3xl bg-white/80 backdrop-blur border border-black/10 shadow-[0_18px_60px_rgba(15,23,42,0.12)] p-8 md:p-10">
-              <h2 className="text-3xl md:text-4xl font-serif font-semibold text-primary">
+              <h2 className="text-3xl md:text-4xl font-semibold text-primary">
                 Create your account
               </h2>
               <p className="mt-2 text-sm text-on-surface-variant">

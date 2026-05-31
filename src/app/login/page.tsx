@@ -12,7 +12,7 @@ export default function LoginPage() {
       <div className="container mx-auto max-w-[1120px] px-4 py-14">
         <section className="flex justify-center">
           <div className="w-full max-w-[520px] rounded-3xl bg-white/80 backdrop-blur border border-black/10 shadow-[0_18px_60px_rgba(15,23,42,0.12)] p-8 md:p-10">
-            <h1 className="text-4xl md:text-5xl font-serif font-semibold text-primary text-center">
+            <h1 className="text-4xl md:text-5xl font-semibold text-primary text-center">
               Welcome Back
             </h1>
             <p className="mt-3 text-sm text-on-surface-variant text-center">

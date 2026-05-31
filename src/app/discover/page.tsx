@@ -151,7 +151,7 @@ function PostCard({ post }: { post: DiscoverPost }) {
           </button>
         </div>
 
-        <h2 className="mt-4 text-2xl md:text-3xl font-serif font-semibold text-on-surface leading-snug">
+        <h2 className="mt-4 text-2xl md:text-3xl font-semibold text-on-surface leading-snug">
           {post.title}
         </h2>
         <p className="mt-3 text-on-surface-variant leading-relaxed">

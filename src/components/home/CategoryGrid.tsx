@@ -34,7 +34,7 @@ export function CategoryGrid({
           <p className="text-xs tracking-wide uppercase text-secondary/90">
             Curated Themes
           </p>
-          <h2 className="mt-2 text-4xl md:text-5xl font-serif font-semibold text-primary">
+          <h2 className="mt-2 text-4xl md:text-5xl font-semibold text-primary">
             Explore Categories
           </h2>
         </div>
@@ -71,7 +71,7 @@ export function CategoryGrid({
               <div className="text-[10px] tracking-wide uppercase text-white/75">
                 {cat.tag}
               </div>
-              <div className="mt-1 text-xl font-serif font-semibold text-white">
+              <div className="mt-1 text-xl font-semibold text-white">
                 {cat.title}
               </div>
             </div>

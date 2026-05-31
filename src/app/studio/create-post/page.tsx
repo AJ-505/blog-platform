@@ -117,7 +117,7 @@ export default function CreatePostPage() {
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full text-5xl md:text-6xl font-serif font-semibold text-black/20 outline-none bg-transparent"
+            className="w-full text-5xl md:text-6xl font-semibold text-black/20 outline-none bg-transparent"
             aria-label="Post title"
           />
 
@@ -141,7 +141,7 @@ export default function CreatePostPage() {
         {/* Settings sidebar */}
         <aside className="border-l border-black/10 bg-white">
           <div className="p-8 border-b border-black/10">
-            <div className="text-2xl font-serif font-semibold text-primary">
+            <div className="text-2xl font-semibold text-primary">
               Post Settings
             </div>
             <div className="text-sm text-on-surface-variant">
