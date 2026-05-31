@@ -20,8 +20,15 @@ export const posts = pgTable("posts", {
   authorId: text("author_id")
     .notNull()
     .references(() => users.username, { onDelete: "cascade" }),
+  slug: text("slug").notNull().unique(),
   title: text("title").notNull(),
+  excerpt: text("excerpt").notNull(),
   content: text("content").notNull(),
+  badge: text("badge"),
+  imageKey: text("image_key"),
+  likes: integer("likes").default(0).notNull(),
+  commentCount: integer("comment_count").default(0).notNull(),
+  isDiscover: integer("is_discover").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -49,7 +56,5 @@ export const follows = pgTable(
       .references(() => users.username, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => [
-    primaryKey({ columns: [table.followerId, table.followingId] }),
-  ],
+  (table) => [primaryKey({ columns: [table.followerId, table.followingId] })],
 );
