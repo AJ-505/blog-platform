@@ -120,6 +120,15 @@ button {
   transform: scaleX(1);
 }
 
+/* Active page indicator: green text + filled underline */
+.nav-link-active {
+  color: #15803d !important;
+}
+
+.nav-link-active::after {
+  transform: scaleX(1);
+}
+
 .search-input {
   width: 320px;
   max-width: 42vw;
