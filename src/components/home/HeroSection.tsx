@@ -9,7 +9,7 @@ export function HeroSection() {
       <div className="flex flex-col">
         <h1 className="mt-4 text-5xl md:text-6xl leading-[1.05] font-serif font-semibold">
           <span className="block text-primary">Share Your Story</span>
-          <span className="block text-secondary">with the World</span>
+          <span className="block text-primary">with the World</span>
         </h1>
         <p className="mt-6 text-base md:text-lg text-on-surface-variant max-w-xl leading-relaxed">
           A premium digital space for visionaries and thinkers. Publish

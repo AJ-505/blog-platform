@@ -180,7 +180,7 @@ function WeeklyLookbook() {
 
         <div className="mt-6 rounded-2xl border border-[#A95162]/30 bg-[#A95162]/5 p-4">
           <div className="text-xs text-on-surface-variant">
-            “Campus style isn't about the price tag; it's about the stories we
+            “Campus style isn&apos;t about the price tag; it&apos;s about the stories we
             scribble into our daily uniforms.” — Anonymous Senior
           </div>
         </div>
