@@ -252,3 +252,44 @@ button {
   color: #ffffff !important;
   border-color: transparent !important;
 }
+
+.creator-editor {
+  color: var(--on-surface);
+}
+
+.creator-editor .is-editor-empty:first-child::before {
+  color: #94a3b8;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.creator-editor h1 {
+  font-size: 2.25rem;
+  line-height: 1.12;
+  font-weight: 650;
+}
+
+.creator-editor h2 {
+  font-size: 1.65rem;
+  line-height: 1.2;
+  font-weight: 650;
+}
+
+.creator-editor p,
+.creator-editor li {
+  color: rgba(23, 23, 23, 0.86);
+}
+
+.creator-editor blockquote {
+  border-left: 4px solid var(--secondary);
+  color: rgba(23, 23, 23, 0.78);
+}
+
+.creator-editor pre {
+  background: #0d1117;
+  color: #f8fafc;
+  border-radius: 0.875rem;
+  padding: 1rem;
+}

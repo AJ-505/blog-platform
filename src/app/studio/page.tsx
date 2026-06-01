@@ -250,8 +250,13 @@ export default function StudioPage() {
                 href="/studio"
               />
               <SidebarLink
-                label="Manage Blogs"
+                label="Write"
                 icon={FileTextIcon}
+                href="/studio/creators"
+              />
+              <SidebarLink
+                label="Manage Blogs"
+                icon={UploadIcon}
                 href="/studio/manage-blogs"
               />
               <SidebarLink label="Published" icon={UploadIcon} href="#" />

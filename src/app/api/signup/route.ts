@@ -2,6 +2,7 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { db } from "@/db";
 import { users } from "@/db/schema";
+import { createSessionValue, SESSION_COOKIE } from "@/lib/server-auth";
 import { or, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -81,10 +82,20 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       { message: "Account created successfully", user: newUser },
       { status: 201 },
     );
+
+    response.cookies.set(SESSION_COOKIE, createSessionValue(newUser), {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+
+    return response;
   } catch (err) {
     console.error("POST /api/signup failed:", err);
     return NextResponse.json(

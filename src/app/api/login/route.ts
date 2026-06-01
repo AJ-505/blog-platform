@@ -2,6 +2,7 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { db } from "@/db";
 import { users } from "@/db/schema";
+import { createSessionValue, SESSION_COOKIE } from "@/lib/server-auth";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -62,10 +63,25 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json({
+    const authUser = {
+      username: user.username,
+      name: user.name,
+      email: user.email,
+    };
+    const response = NextResponse.json({
       message: "Login successful",
-      user: { username: user.username, name: user.name, email: user.email },
+      user: authUser,
     });
+
+    response.cookies.set(SESSION_COOKIE, createSessionValue(authUser), {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+
+    return response;
   } catch (err) {
     console.error("POST /api/login failed:", err);
     return NextResponse.json(

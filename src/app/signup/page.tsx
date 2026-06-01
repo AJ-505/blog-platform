@@ -46,7 +46,9 @@ export default function SignupPage() {
     mutationFn: signup,
     onSuccess: (data) => {
       saveUser(data.user);
-      router.push("/studio");
+      const nextPath =
+        new URLSearchParams(window.location.search).get("next") || "/studio";
+      router.push(nextPath);
     },
   });
 
@@ -201,7 +203,9 @@ export default function SignupPage() {
                     <button
                       type="button"
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                       onClick={() => setShowPassword((v) => !v)}
                     >
                       {showPassword ? "●" : "◦"}

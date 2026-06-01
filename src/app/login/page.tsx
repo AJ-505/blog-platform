@@ -36,7 +36,9 @@ export default function LoginPage() {
     mutationFn: login,
     onSuccess: (data) => {
       saveUser(data.user);
-      router.push("/studio");
+      const nextPath =
+        new URLSearchParams(window.location.search).get("next") || "/studio";
+      router.push(nextPath);
     },
   });
 
