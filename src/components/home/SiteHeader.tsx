@@ -1,15 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 export function SiteHeader() {
   return (
     <header className="header glassmorphism flex items-center justify-between px-8 py-4">
       <Link
         href="/"
-        className="logo font-bold text-2xl"
+        className="logo font-bold text-2xl flex items-center gap-2"
         style={{ color: "#0B1F3B" }}
       >
+        <Image
+          src="/blog_pen_logo.svg"
+          alt="Scribbled logo"
+          width={32}
+          height={32}
+        />
         SCRIBBLED
       </Link>
       <nav className="flex gap-8 items-center">
