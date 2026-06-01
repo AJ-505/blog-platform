@@ -1,99 +1,70 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { SiteHeader } from "@/components/home/SiteHeader";
+import { getDiscoverPosts } from "@/lib/posts";
 
 import artImg from "@/assets/Art.png";
 import bookImg from "@/assets/Book.png";
-import eventImg from "@/assets/Event.png";
 import discoverImg from "@/assets/Discover.png";
-import modelImg from "@/assets/Model.png";
 import retroImg from "@/assets/Retro.png";
 
+export const dynamic = "force-dynamic";
+
 type DiscoverPost = {
-  id: string;
+  id: number;
   author: string;
-  badge?: string;
+  slug: string;
+  badge: string | null;
   timeAgo: string;
   title: string;
   excerpt: string;
   image?: unknown;
-  likes: string;
-  comments: string;
+  likes: number;
+  comments: number;
 };
 
-const POSTS: DiscoverPost[] = [
-  {
-    id: "p1",
-    author: "Professor H. Whittaker",
-    badge: "SCRIBBLED ORIGINAL",
-    timeAgo: "12h",
-    title:
-      "The Secret History of the Quad: Underground Tunnels & Midnight Myths",
-    excerpt:
-      "Discover the hidden world beneath our feet. For decades, students have whispered about a labyrinth of tunnels connecting the oldest halls of residence...",
-    image: discoverImg,
-    likes: "1.4k",
-    comments: "86",
-  },
-  {
-    id: "p2",
-    author: "Maya Rivers",
-    badge: "CAMPUS FASHION",
-    timeAgo: "2d",
-    title: "Retro Oversized Vibes: Why the 90s are Back on Campus",
-    excerpt:
-      "Ditch the tight fit. We’re exploring the rise of comfort-first campus aesthetics this fall. From oversized cable knits to baggy corduroy, here's how to nail the look...",
-    image: retroImg,
-    likes: "312",
-    comments: "14",
-  },
-  {
-    id: "p3",
-    author: "Roommate Drama",
-    badge: "ROOMMATE DRAMA",
-    timeAgo: "3d",
-    title: "The Shared Router Incident: A Tragedy in 3 Parts",
-    excerpt:
-      "Why setting the WiFi password to 'LaundryIsYourJob' was a bad idea and led to a three-week internet blackout...",
-    likes: "1.2k",
-    comments: "58",
-  },
-  {
-    id: "p4",
-    author: "Jordan Chen",
-    badge: "CAMPUS LIFE",
-    timeAgo: "6d",
-    title: "Midnight Coffee Runs: The Unofficial Campus Tradition",
-    excerpt:
-      "Some things only happen after 11 PM — group chats, deep talks, and the collective mission to find the only café still open...",
-    image: artImg,
-    likes: "780",
-    comments: "33",
-  },
-  {
-    id: "p5",
-    author: "Elena M.",
-    badge: "STUDY",
-    timeAgo: "1w",
-    title: "How I Study When I Don’t Feel Like Studying",
-    excerpt:
-      "A realistic system for low-motivation days: micro-tasks, ambient noise, and the 20-minute promise that actually works...",
-    image: bookImg,
-    likes: "2.1k",
-    comments: "104",
-  },
-];
+const imageByKey = {
+  art: artImg,
+  book: bookImg,
+  discover: discoverImg,
+  retro: retroImg,
+} as const;
 
-function IconStat({ icon, value }: { icon: string; value: string }) {
+function formatCount(value: number) {
+  if (value >= 1000) {
+    return `${Math.round(value / 100) / 10}k`;
+  }
+
+  return `${value}`;
+}
+
+function formatTimeAgo(date: Date) {
+  const diffMs = Date.now() - date.getTime();
+  const diffHours = Math.max(1, Math.floor(diffMs / (1000 * 60 * 60)));
+
+  if (diffHours < 24) {
+    return `${diffHours}h`;
+  }
+
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 7) {
+    return `${diffDays}d`;
+  }
+
+  return `${Math.floor(diffDays / 7)}w`;
+}
+
+function IconStat({ icon, value }: { icon: string; value: number }) {
   return (
     <div className="flex items-center gap-2 text-sm text-on-surface-variant">
       <span aria-hidden>{icon}</span>
-      <span className="font-medium text-on-surface">{value}</span>
+      <span className="font-medium text-on-surface">{formatCount(value)}</span>
     </div>
   );
 }
 
-function PostActions({ likes, comments }: { likes: string; comments: string }) {
+function PostActions({ likes, comments }: { likes: number; comments: number }) {
   return (
     <div className="mt-5 flex items-center justify-between text-on-surface-variant">
       <div className="flex items-center gap-6">
@@ -120,7 +91,7 @@ function PostCard({ post }: { post: DiscoverPost }) {
   const hasHero = Boolean(post.image);
 
   return (
-    <article className="rounded-3xl border border-black/10 bg-white/70 backdrop-blur shadow-sm overflow-hidden">
+    <article className="rounded-3xl border border-black/10 bg-white/70 backdrop-blur shadow-sm overflow-hidden transition hover:-translate-y-0.5 hover:shadow-md">
       <div className="p-6 md:p-7">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3">
@@ -151,35 +122,52 @@ function PostCard({ post }: { post: DiscoverPost }) {
           </button>
         </div>
 
-        <h2 className="mt-4 text-2xl md:text-3xl font-serif font-semibold text-on-surface leading-snug">
-          {post.title}
-        </h2>
-        <p className="mt-3 text-on-surface-variant leading-relaxed">
-          {post.excerpt}
-        </p>
+        <Link href={`/article/${post.slug}`} className="group block">
+          <h2 className="mt-4 text-2xl md:text-3xl font-semibold text-on-surface leading-snug group-hover:text-primary transition-colors">
+            {post.title}
+          </h2>
+          <p className="mt-3 text-on-surface-variant leading-relaxed">
+            {post.excerpt}
+          </p>
+        </Link>
       </div>
 
       {hasHero ? (
         <div className="px-6 md:px-7 pb-6 md:pb-7">
-          <div className="relative overflow-hidden rounded-2xl border border-black/10 bg-black/5 h-[240px] md:h-[300px]">
+          <Link
+            href={`/article/${post.slug}`}
+            className="relative block overflow-hidden rounded-2xl border border-black/10 bg-black/5 h-[240px] md:h-[300px]"
+            aria-label={`Read ${post.title}`}
+          >
             <Image
               src={post.image as never}
               alt={post.title}
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
-          </div>
+          </Link>
           <PostActions likes={post.likes} comments={post.comments} />
         </div>
       ) : (
         <div className="px-6 md:px-7 pb-6 md:pb-7">
-          <div className="rounded-2xl border border-black/10 bg-white/60 p-5">
+          <Link
+            href={`/article/${post.slug}`}
+            className="block rounded-2xl border border-black/10 bg-white/60 p-5 hover:bg-white/80"
+          >
             <div className="text-sm text-on-surface-variant">
               {post.excerpt}
             </div>
-          </div>
+          </Link>
           <PostActions likes={post.likes} comments={post.comments} />
         </div>
       )}
+      <div className="px-6 pb-6 md:px-7 md:pb-7">
+        <Link
+          href={`/article/${post.slug}`}
+          className="inline-flex rounded-full border border-black/10 bg-white/70 px-4 py-2 text-sm font-semibold text-on-surface transition hover:border-primary/30 hover:text-primary"
+        >
+          Read post
+        </Link>
+      </div>
     </article>
   );
 }
@@ -226,7 +214,11 @@ function RecommendedUsers() {
   );
 }
 
-function TrendingNow() {
+function TrendingNow({ posts }: { posts: DiscoverPost[] }) {
+  const trending = [...posts]
+    .sort((a, b) => b.likes + b.comments - (a.likes + a.comments))
+    .slice(0, 3);
+
   return (
     <section className="rounded-3xl border border-black/10 bg-white/70 backdrop-blur shadow-sm overflow-hidden">
       <div className="p-5">
@@ -236,39 +228,23 @@ function TrendingNow() {
         </div>
 
         <div className="mt-5 space-y-4">
-          <div>
-            <div className="text-xs font-semibold text-secondary">
-              #1 Campus Life
+          {trending.map((post, index) => (
+            <div key={post.id}>
+              <div className="text-xs font-semibold text-secondary">
+                #{index + 1} {post.badge ?? "Campus"}
+              </div>
+              <Link
+                href={`/article/${post.slug}`}
+                className="mt-1 block font-medium text-on-surface hover:text-primary"
+              >
+                {post.title}
+              </Link>
+              <div className="text-xs text-on-surface-variant">
+                {formatCount(post.likes + post.comments)} students talking about
+                this
+              </div>
             </div>
-            <div className="mt-1 font-medium text-on-surface">
-              The Shared Router Incident
-            </div>
-            <div className="text-xs text-on-surface-variant">
-              5.4k students talking about this
-            </div>
-          </div>
-          <div>
-            <div className="text-xs font-semibold text-secondary">
-              #2 Food & Drink
-            </div>
-            <div className="mt-1 font-medium text-on-surface">
-              Midnight Coffee Runs
-            </div>
-            <div className="text-xs text-on-surface-variant">
-              2.1k mentions today
-            </div>
-          </div>
-          <div>
-            <div className="text-xs font-semibold text-secondary">
-              #3 Academics
-            </div>
-            <div className="mt-1 font-medium text-on-surface">
-              The Library Ghost is Back
-            </div>
-            <div className="text-xs text-on-surface-variant">
-              18k spooky whispers
-            </div>
-          </div>
+          ))}
         </div>
 
         <button
@@ -282,7 +258,15 @@ function TrendingNow() {
   );
 }
 
-export default function DiscoverPage() {
+export default async function DiscoverPage() {
+  const posts = (await getDiscoverPosts()).map((post) => ({
+    ...post,
+    timeAgo: formatTimeAgo(post.createdAt),
+    image: post.imageKey
+      ? imageByKey[post.imageKey as keyof typeof imageByKey]
+      : undefined,
+  }));
+
   return (
     <main className="min-h-screen flex flex-col">
       <SiteHeader />
@@ -290,45 +274,15 @@ export default function DiscoverPage() {
       <div className="container mx-auto max-w-[1120px] px-4 py-10 flex-1">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
           <div className="space-y-8">
-            <PostCard post={POSTS[0]} />
+            {posts[0] ? <PostCard post={posts[0]} /> : null}
             <RecommendedUsers />
-            {POSTS.slice(1).map((p) => (
+            {posts.slice(1).map((p) => (
               <PostCard key={p.id} post={p} />
             ))}
-
-            {/* Extra posts for scroll */}
-            <PostCard
-              post={{
-                id: "p6",
-                author: "Campus Chronicle",
-                badge: "CAMPUS LIFE",
-                timeAgo: "1w",
-                title: "Dorm Room Decor on a Budget: The 5-Item Rule",
-                excerpt:
-                  "A quick guide to making your space feel like you without spending a fortune — lighting, texture, and one bold statement piece...",
-                image: artImg,
-                likes: "540",
-                comments: "22",
-              }}
-            />
-            <PostCard
-              post={{
-                id: "p7",
-                author: "Late Night Lab",
-                badge: "ACADEMICS",
-                timeAgo: "2w",
-                title: "Group Projects: The Survival Manual",
-                excerpt:
-                  "How to assign roles, set deadlines, and avoid the classic 'seen at 2:13 AM' teammate situation...",
-                image: bookImg,
-                likes: "1.9k",
-                comments: "97",
-              }}
-            />
           </div>
 
           <aside className="space-y-6 sticky top-6">
-            <TrendingNow />
+            <TrendingNow posts={posts} />
           </aside>
         </div>
       </div>

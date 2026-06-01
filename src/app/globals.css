@@ -1,13 +1,21 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 :root {
   /* Light purple base */
   --background: #f3f0ff;
   --foreground: #171717;
+  --on-surface: #171717;
+  --on-surface-variant: rgba(23, 23, 23, 0.68);
 
   /* Brand (dark blue) */
   --primary: #0b1f3b;
   --on-primary: #ffffff;
+  --primary-foreground: var(--on-primary);
+  --secondary: #a95162;
+  --secondary-foreground: #ffffff;
+  --muted: rgba(15, 23, 42, 0.08);
+  --border: rgba(15, 23, 42, 0.14);
 }
 
 @theme inline {
@@ -16,9 +24,18 @@
 
   --color-primary: var(--primary);
   --color-on-primary: var(--on-primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --font-primary: var(--font-poppins);
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -54,8 +71,11 @@ body {
     ),
     var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
   min-height: 100vh;
+}
+
+button {
+  cursor: pointer;
 }
 
 /* ---------- Component styles (landing page) ---------- */
@@ -100,6 +120,15 @@ body {
   transform: scaleX(1);
 }
 
+/* Active page indicator: green text + filled underline */
+.nav-link-active {
+  color: #15803d !important;
+}
+
+.nav-link-active::after {
+  transform: scaleX(1);
+}
+
 .search-input {
   width: 320px;
   max-width: 42vw;
@@ -116,13 +145,15 @@ body {
 }
 
 .btn-primary,
-.btn-secondary {
+.btn-secondary,
+.btn-outline {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   line-height: 1;
   border-radius: 0.75rem;
+  cursor: pointer;
   transition:
     transform 120ms ease,
     box-shadow 120ms ease,
@@ -130,6 +161,13 @@ body {
     border-color 120ms ease,
     color 120ms ease;
   user-select: none;
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-outline:disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .btn-primary {
@@ -144,6 +182,10 @@ body {
   transform: translateY(-1px);
 }
 
+.btn-primary:active {
+  transform: scale(0.95);
+}
+
 .btn-secondary {
   background: rgba(255, 255, 255, 0.9);
   color: rgba(15, 23, 42, 0.86);
@@ -156,9 +198,98 @@ body {
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
 }
 
+.btn-secondary:active {
+  transform: scale(0.95);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.btn-outline:hover {
+  background: var(--muted);
+  border-color: rgba(15, 23, 42, 0.2);
+}
+
+.btn-outline:active {
+  transform: scale(0.95);
+}
+
+.btn-cta-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  background: transparent;
+  color: #ffffff;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+  user-select: none;
+}
+
+.btn-cta-outline:hover {
+  background: #ffffff;
+  color: var(--primary);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.28);
+  transform: translateY(-2px);
+}
+
+.btn-cta-outline:active {
+  transform: scale(0.95);
+}
+
 /* Header "Home" pill hover */
 .btn-home:hover {
   background: #a95162 !important;
   color: #ffffff !important;
   border-color: transparent !important;
+}
+
+.creator-editor {
+  color: var(--on-surface);
+}
+
+.creator-editor .is-editor-empty:first-child::before {
+  color: #94a3b8;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.creator-editor h1 {
+  font-size: 2.25rem;
+  line-height: 1.12;
+  font-weight: 650;
+}
+
+.creator-editor h2 {
+  font-size: 1.65rem;
+  line-height: 1.2;
+  font-weight: 650;
+}
+
+.creator-editor p,
+.creator-editor li {
+  color: rgba(23, 23, 23, 0.86);
+}
+
+.creator-editor blockquote {
+  border-left: 4px solid var(--secondary);
+  color: rgba(23, 23, 23, 0.78);
+}
+
+.creator-editor pre {
+  background: #0d1117;
+  color: #f8fafc;
+  border-radius: 0.875rem;
+  padding: 1rem;
 }

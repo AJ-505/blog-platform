@@ -1,7 +1,7 @@
 export function CTASection() {
   return (
     <section className="cta-section bg-primary text-on-primary rounded-xl py-16 px-8 flex flex-col items-center text-center my-16">
-      <h3 className="text-h2 font-serif mb-4">
+      <h3 className="text-h2 mb-4">
         Ready to give your ideas the home they deserve?
       </h3>
       <p className="text-body-lg mb-8 max-w-2xl mx-auto">
@@ -12,7 +12,7 @@ export function CTASection() {
         <button className="btn-secondary bg-secondary text-on-secondary px-6 py-3 rounded">
           Join the Community
         </button>
-        <button className="btn-primary border border-on-primary px-6 py-3 rounded bg-transparent text-on-primary">
+        <button className="btn-cta-outline px-8 py-3 rounded-full font-medium">
           Explore Membership
         </button>
       </div>

@@ -85,7 +85,7 @@ function OriginalPostCard({ post }: { post: FeedPost }) {
               ORIGINAL
             </div>
 
-            <h2 className="mt-4 font-serif text-2xl md:text-3xl font-semibold text-on-surface leading-snug">
+            <h2 className="mt-4 text-2xl md:text-3xl font-semibold text-on-surface leading-snug">
               {post.title}
             </h2>
 
@@ -174,7 +174,7 @@ function WeeklyHotTakeCard() {
         <span>WEEKLY HOT TAKE</span>
       </div>
 
-      <p className="mt-4 font-serif text-xl md:text-2xl font-semibold text-on-surface leading-snug">
+      <p className="mt-4 text-xl md:text-2xl font-semibold text-on-surface leading-snug">
         “Campus coffee tastes like burnt disappointment but we still queue for
         20 minutes every morning. Why are we like this?”
       </p>
@@ -231,7 +231,7 @@ function TrendingCard({ post }: { post: FeedPost }) {
               TRENDING
             </div>
 
-            <h3 className="mt-4 font-serif text-2xl font-semibold text-on-surface leading-snug">
+            <h3 className="mt-4 text-2xl font-semibold text-on-surface leading-snug">
               {post.title}
             </h3>
 
@@ -271,7 +271,7 @@ export default function FeedPage() {
             THE DAILY BUZZ
           </div>
 
-          <h1 className="mt-6 font-serif font-semibold leading-[1.05]">
+          <h1 className="mt-6 font-semibold leading-[1.05]">
             <span className="block text-5xl md:text-6xl text-on-surface">
               Campus
             </span>

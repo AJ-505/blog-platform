@@ -86,7 +86,7 @@ export default function ManageBlogsPage() {
           >
             ───── My Creative Space
           </div>
-          <h1 className="mt-4 text-5xl md:text-6xl font-serif font-semibold text-on-surface">
+          <h1 className="mt-4 text-5xl md:text-6xl font-semibold text-on-surface">
             Manage your blogs
           </h1>
           <p className="mt-4 text-lg text-on-surface-variant max-w-3xl">

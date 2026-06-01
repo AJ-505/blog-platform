@@ -1,95 +1,69 @@
 import {
-  pgTable,
-  serial,
+  sqliteTable,
   text,
-  timestamp,
   integer,
   primaryKey,
-} from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+} from "drizzle-orm/sqlite-core";
+import { sql } from "drizzle-orm";
 
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+export const users = sqliteTable("users", {
+  username: text("username").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  passwordHash: text("password_hash").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
 });
 
-export const follows = pgTable(
-  "follows",
-  {
-    followerId: integer("follower_id")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    followingId: integer("following_id")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-  },
-  (t) => ({
-    pk: primaryKey({ columns: [t.followerId, t.followingId] }),
-  }),
-);
-
-export const posts = pgTable("posts", {
-  id: serial("id").primaryKey(),
-  authorId: integer("author_id")
+export const posts = sqliteTable("posts", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  authorId: text("author_id")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => users.username, { onDelete: "cascade" }),
+  slug: text("slug").notNull().unique(),
   title: text("title").notNull(),
+  excerpt: text("excerpt").notNull(),
   content: text("content").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+  badge: text("badge"),
+  imageKey: text("image_key"),
+  likes: integer("likes").default(0).notNull(),
+  commentCount: integer("comment_count").default(0).notNull(),
+  isDiscover: integer("is_discover").default(0).notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
 });
 
-export const comments = pgTable("comments", {
-  id: serial("id").primaryKey(),
+export const comments = sqliteTable("comments", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   postId: integer("post_id")
     .notNull()
     .references(() => posts.id, { onDelete: "cascade" }),
-  authorId: integer("author_id")
+  authorId: text("author_id")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => users.username, { onDelete: "cascade" }),
   content: text("content").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
 });
 
-// Relations (Useful for Drizzle Queries)
-export const usersRelations = relations(users, ({ many }) => ({
-  posts: many(posts),
-  comments: many(comments),
-  followers: many(follows, { relationName: "following" }), // users who follow this user
-  following: many(follows, { relationName: "follower" }), // users this user follows
-}));
-
-export const postsRelations = relations(posts, ({ one, many }) => ({
-  author: one(users, {
-    fields: [posts.authorId],
-    references: [users.id],
-  }),
-  comments: many(comments),
-}));
-
-export const commentsRelations = relations(comments, ({ one }) => ({
-  post: one(posts, {
-    fields: [comments.postId],
-    references: [posts.id],
-  }),
-  author: one(users, {
-    fields: [comments.authorId],
-    references: [users.id],
-  }),
-}));
-
-export const followsRelations = relations(follows, ({ one }) => ({
-  follower: one(users, {
-    fields: [follows.followerId],
-    references: [users.id],
-    relationName: "follower",
-  }),
-  following: one(users, {
-    fields: [follows.followingId],
-    references: [users.id],
-    relationName: "following",
-  }),
-}));
+export const follows = sqliteTable(
+  "follows",
+  {
+    followerId: text("follower_id")
+      .notNull()
+      .references(() => users.username, { onDelete: "cascade" }),
+    followingId: text("following_id")
+      .notNull()
+      .references(() => users.username, { onDelete: "cascade" }),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.followerId, table.followingId] })],
+);

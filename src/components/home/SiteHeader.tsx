@@ -2,8 +2,25 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+
+const NAV_ITEMS = [
+  { label: "Discover", href: "/discover" },
+  { label: "Feed", href: "/feed" },
+  { label: "Creators", href: "/studio/create-post" },
+  { label: "Studio", href: "/studio" },
+];
 
 export function SiteHeader() {
+  const pathname = usePathname();
+
+  // A link matches when the path equals its href or is nested under it.
+  // Pick the longest match so /studio/create-post highlights "Creators",
+  // not "Studio".
+  const activeHref = NAV_ITEMS.filter(
+    ({ href }) => pathname === href || pathname.startsWith(`${href}/`),
+  ).sort((a, b) => b.href.length - a.href.length)[0]?.href;
+
   return (
     <header className="header glassmorphism flex items-center justify-between px-8 py-4">
       <Link
@@ -19,25 +36,22 @@ export function SiteHeader() {
         />
         SCRIBBLED
       </Link>
-      <nav className="flex gap-8 items-center">
-        <Link href="/discover" className="nav-link text-on-surface-variant">
-          DISCOVER
-        </Link>
-        <Link href="/feed" className="nav-link text-on-surface-variant">
-          FEED
-        </Link>
-        <Link
-          href="/studio/create-post"
-          className="nav-link text-on-surface-variant"
-        >
-          CREATORS
-        </Link>
-        <Link href="/studio" className="nav-link text-on-surface-variant">
-          STUDIO
-        </Link>
+      <nav className="flex gap-5 items-center">
+        {NAV_ITEMS.map(({ label, href }) => (
+          <Link
+            key={href}
+            href={href}
+            aria-current={href === activeHref ? "page" : undefined}
+            className={`nav-link font-semibold${
+              href === activeHref ? " nav-link-active" : ""
+            }`}
+          >
+            {label}
+          </Link>
+        ))}
       </nav>
       <div className="flex items-center gap-4">
-        <input className="search-input" placeholder="search for trends" />
+        <input className="search-input" placeholder="Search for trends" />
         <Link
           href="/"
           className="btn-secondary btn-home rounded-full px-4 py-2"

@@ -1,10 +1,62 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { saveUser, type AuthUser } from "@/lib/auth";
 
 import digitalImg from "@/assets/Digital.png";
-import literaryspaceImg from "@/assets/literaryspace.png";
+
+type SignupResponse = { message: string; user: AuthUser };
+
+async function signup(input: {
+  username: string;
+  name: string;
+  email: string;
+  password: string;
+}): Promise<SignupResponse> {
+  const res = await fetch("/api/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(
+      data?.error ?? "Unable to create your account. Please try again.",
+    );
+  }
+
+  return data as SignupResponse;
+}
 
 export default function SignupPage() {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const mutation = useMutation({
+    mutationFn: signup,
+    onSuccess: (data) => {
+      saveUser(data.user);
+      const nextPath =
+        new URLSearchParams(window.location.search).get("next") || "/studio";
+      router.push(nextPath);
+    },
+  });
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    mutation.mutate({ username, name, email, password });
+  }
+
   return (
     <main className="min-h-screen">
       <header className="header glassmorphism flex items-center justify-between px-8 py-4">
@@ -22,7 +74,7 @@ export default function SignupPage() {
       <div className="container mx-auto max-w-[1120px] px-4 py-14">
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <div className="pr-0 lg:pr-10">
-            <h1 className="text-5xl md:text-6xl leading-[1.05] font-serif font-semibold text-primary">
+            <h1 className="text-5xl md:text-6xl leading-[1.05] font-semibold text-primary">
               Articulating the visionary,
               <br />
               together.
@@ -40,7 +92,7 @@ export default function SignupPage() {
                     ▣
                   </div>
                   <div>
-                    <div className="font-serif text-xl font-semibold text-primary">
+                    <div className=" text-xl font-semibold text-primary">
                       Exclusive Archives
                     </div>
                     <div className="mt-1 text-sm text-on-surface-variant leading-relaxed">
@@ -57,7 +109,7 @@ export default function SignupPage() {
                     ✦
                   </div>
                   <div>
-                    <div className="font-serif text-xl font-semibold text-primary">
+                    <div className=" text-xl font-semibold text-primary">
                       Creator Studio
                     </div>
                     <div className="mt-1 text-sm text-on-surface-variant leading-relaxed">
@@ -75,7 +127,7 @@ export default function SignupPage() {
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
-                <div className="absolute bottom-4 left-5 text-white/95 text-sm font-serif drop-shadow">
+                <div className="absolute bottom-4 left-5 text-white/95 text-sm drop-shadow">
                   “The word is the architecture of the soul.”
                 </div>
               </div>
@@ -84,14 +136,14 @@ export default function SignupPage() {
 
           <div className="lg:pl-10">
             <div className="rounded-3xl bg-white/80 backdrop-blur border border-black/10 shadow-[0_18px_60px_rgba(15,23,42,0.12)] p-8 md:p-10">
-              <h2 className="text-3xl md:text-4xl font-serif font-semibold text-primary">
+              <h2 className="text-3xl md:text-4xl font-semibold text-primary">
                 Create your account
               </h2>
               <p className="mt-2 text-sm text-on-surface-variant">
                 Start your journey into the SCRIBBLED ecosystem today.
               </p>
 
-              <form className="mt-8 space-y-5">
+              <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
                 <div>
                   <label className="block text-xs tracking-wide uppercase text-on-surface-variant mb-2">
                     Full name
@@ -99,6 +151,24 @@ export default function SignupPage() {
                   <input
                     className="w-full h-12 rounded-xl border border-black/10 bg-white px-4 outline-none"
                     placeholder="Elias Thorne"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs tracking-wide uppercase text-on-surface-variant mb-2">
+                    Username
+                  </label>
+                  <input
+                    className="w-full h-12 rounded-xl border border-black/10 bg-white px-4 outline-none"
+                    placeholder="eliasthorne"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    required
                   />
                 </div>
 
@@ -110,6 +180,9 @@ export default function SignupPage() {
                     className="w-full h-12 rounded-xl border border-black/10 bg-white px-4 outline-none"
                     placeholder="elias@scribbled.com"
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
 
@@ -121,23 +194,37 @@ export default function SignupPage() {
                     <input
                       className="w-full h-12 rounded-xl border border-black/10 bg-white px-4 pr-12 outline-none"
                       placeholder="••••••••••••"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      minLength={8}
+                      required
                     />
                     <button
                       type="button"
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant"
-                      aria-label="Show password"
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                      onClick={() => setShowPassword((v) => !v)}
                     >
-                      ◦
+                      {showPassword ? "●" : "◦"}
                     </button>
                   </div>
                 </div>
 
+                {mutation.isError && (
+                  <p className="text-sm text-red-600" role="alert">
+                    {mutation.error.message}
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  className="btn-primary w-full py-4 text-base"
+                  className="btn-primary w-full py-4 text-base disabled:opacity-60"
+                  disabled={mutation.isPending}
                 >
-                  Create Account
+                  {mutation.isPending ? "Creating account…" : "Create Account"}
                 </button>
 
                 <p className="text-xs text-on-surface-variant text-center">

@@ -74,7 +74,7 @@ function FeaturedHero() {
         <div className="inline-flex items-center rounded-full bg-white/20 border border-white/20 px-4 py-2 text-xs font-semibold tracking-wide text-white">
           Featured Event
         </div>
-        <h1 className="mt-5 text-4xl md:text-5xl font-serif font-semibold text-white">
+        <h1 className="mt-5 text-4xl md:text-5xl font-semibold text-white">
           Upcoming Events
         </h1>
         <p className="mt-3 text-white/85 max-w-2xl">
@@ -131,7 +131,7 @@ function EventTile({
         <div className="text-[11px] tracking-wide uppercase text-secondary font-semibold">
           {event.category}
         </div>
-        <div className="mt-2 text-2xl font-serif font-semibold text-primary">
+        <div className="mt-2 text-2xl font-semibold text-primary">
           {event.title}
         </div>
         {event.location ? (

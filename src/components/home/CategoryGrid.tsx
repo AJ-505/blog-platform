@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image, { StaticImageData } from "next/image";
 import poeticImg from "@/assets/Poetic.png";
 import spatialImg from "@/assets/spatial.png";
@@ -33,7 +34,7 @@ export function CategoryGrid({
           <p className="text-xs tracking-wide uppercase text-secondary/90">
             Curated Themes
           </p>
-          <h2 className="mt-2 text-4xl md:text-5xl font-serif font-semibold text-primary">
+          <h2 className="mt-2 text-4xl md:text-5xl font-semibold text-primary">
             Explore Categories
           </h2>
         </div>
@@ -51,9 +52,9 @@ export function CategoryGrid({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {categories.map((cat) => (
-          <a
+          <Link
             key={cat.title}
-            href="#"
+            href="/article/sample-article"
             className="group relative overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition"
           >
             <Image
@@ -70,13 +71,13 @@ export function CategoryGrid({
               <div className="text-[10px] tracking-wide uppercase text-white/75">
                 {cat.tag}
               </div>
-              <div className="mt-1 text-xl font-serif font-semibold text-white">
+              <div className="mt-1 text-xl font-semibold text-white">
                 {cat.title}
               </div>
             </div>
 
             <div className="pointer-events-none absolute inset-0 ring-1 ring-black/5 group-hover:ring-black/10" />
-          </a>
+          </Link>
         ))}
       </div>
     </section>

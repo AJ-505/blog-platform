@@ -1,15 +1,12 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-import * as schema from "./schema";
+import { createClient } from "@libsql/client";
+import { drizzle } from "drizzle-orm/libsql";
+import { config } from "dotenv";
 
-if (!process.env.DATABASE_URL) {
-  console.error("Missing DATABASE_URL environment variable.");
-  process.exit(1);
-}
+config({ path: ".env" }); // or .env.local
 
-// We use the standard pg Pool for connection pooling, NOT the serverless driver!
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+const client = createClient({
+  url: process.env.TURSO_DATABASE_URL!,
+  authToken: process.env.TURSO_AUTH_TOKEN,
 });
 
-export const db = drizzle(pool, { schema });
+export const db = drizzle({ client });

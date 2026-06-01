@@ -7,9 +7,9 @@ export function HeroSection() {
   return (
     <section className="hero grid grid-cols-1 md:grid-cols-2 gap-12 items-center py-14">
       <div className="flex flex-col">
-        <h1 className="mt-4 text-5xl md:text-6xl leading-[1.05] font-serif font-semibold">
+        <h1 className="mt-4 text-5xl md:text-6xl leading-[1.05] font-semibold">
           <span className="block text-primary">Share Your Story</span>
-          <span className="block text-secondary">with the World</span>
+          <span className="block text-primary">with the World</span>
         </h1>
         <p className="mt-6 text-base md:text-lg text-on-surface-variant max-w-xl leading-relaxed">
           A premium digital space for visionaries and thinkers. Publish
@@ -24,8 +24,8 @@ export function HeroSection() {
           >
             Get Started
           </Link>
-          <button className="btn-secondary px-7 py-3 rounded-lg font-medium border">
-            View Showcases
+          <button className="cursor-pointer btn-secondary px-7 py-3 rounded-lg font-medium border">
+            <Link href="/discover">View Showcases</Link>
           </button>
         </div>
       </div>
@@ -49,12 +49,12 @@ export function HeroSection() {
               <div className="text-[10px] tracking-wide uppercase text-on-surface-variant">
                 Trending Now
               </div>
-              <a
-                href="#"
+              <Link
+                href="/article/sample-article"
                 className="mt-1 block text-primary font-semibold leading-snug"
               >
                 The Art of Minimalist Living
-              </a>
+              </Link>
             </div>
           </div>
         </div>

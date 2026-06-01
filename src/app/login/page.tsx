@@ -1,6 +1,52 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { saveUser, type AuthUser } from "@/lib/auth";
+
+type LoginResponse = { message: string; user: AuthUser };
+
+async function login(credentials: {
+  email: string;
+  password: string;
+}): Promise<LoginResponse> {
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(credentials),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data?.error ?? "Unable to sign in. Please try again.");
+  }
+
+  return data as LoginResponse;
+}
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const mutation = useMutation({
+    mutationFn: login,
+    onSuccess: (data) => {
+      saveUser(data.user);
+      const nextPath =
+        new URLSearchParams(window.location.search).get("next") || "/studio";
+      router.push(nextPath);
+    },
+  });
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    mutation.mutate({ email, password });
+  }
+
   return (
     <main className="min-h-screen">
       <header className="header glassmorphism flex items-center justify-between px-8 py-4">
@@ -12,14 +58,14 @@ export default function LoginPage() {
       <div className="container mx-auto max-w-[1120px] px-4 py-14">
         <section className="flex justify-center">
           <div className="w-full max-w-[520px] rounded-3xl bg-white/80 backdrop-blur border border-black/10 shadow-[0_18px_60px_rgba(15,23,42,0.12)] p-8 md:p-10">
-            <h1 className="text-4xl md:text-5xl font-serif font-semibold text-primary text-center">
+            <h1 className="text-4xl md:text-5xl font-semibold text-primary text-center">
               Welcome Back
             </h1>
             <p className="mt-3 text-sm text-on-surface-variant text-center">
               Continue your creative journey with SCRIBBLED.
             </p>
 
-            <form className="mt-10 space-y-6">
+            <form className="mt-10 space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label className="block text-xs tracking-wide uppercase text-on-surface-variant mb-2">
                   Email address
@@ -28,6 +74,9 @@ export default function LoginPage() {
                   className="w-full h-12 rounded-xl border border-black/10 bg-white px-4 outline-none"
                   placeholder="name@example.com"
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
 
@@ -47,14 +96,24 @@ export default function LoginPage() {
                   className="w-full h-12 rounded-xl border border-black/10 bg-white px-4 outline-none"
                   placeholder="••••••••"
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
               </div>
 
+              {mutation.isError && (
+                <p className="text-sm text-red-600" role="alert">
+                  {mutation.error.message}
+                </p>
+              )}
+
               <button
                 type="submit"
-                className="btn-primary w-full py-4 text-base"
+                className="btn-primary w-full py-4 text-base disabled:opacity-60"
+                disabled={mutation.isPending}
               >
-                Sign In
+                {mutation.isPending ? "Signing in…" : "Sign In"}
               </button>
 
               <div className="flex items-center gap-4 pt-2">

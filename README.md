@@ -50,8 +50,24 @@ You will notice a file called `.env.example` in the root of the project. Environ
 **Your Action Item:**
 
 1. Copy the `.env.example` file and rename the copy to `.env`.
-2. Ask the Team Lead for the actual values (like the `DATABASE_URL`) to put inside your `.env` file.
+2. Ask the Team Lead for the actual Turso values (`TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`) to put inside your `.env` file.
 3. _Note: The `.env` file is intentionally ignored by Git so your secrets stay safe!_
+
+## Database Setup
+
+This project uses Turso/libSQL with Drizzle. After filling in `.env`, run migrations before starting work that depends on database tables:
+
+```bash
+pnpm db:migrate
+```
+
+To load the discover-page seed content into the configured Turso database, run:
+
+```bash
+pnpm db:seed:discover
+```
+
+The seed script is idempotent, so it is safe to rerun. It avoids a manual transaction wrapper because Turso's remote HTTP client does not keep a `BEGIN` transaction active across separate seed calls.
 
 ---
 
