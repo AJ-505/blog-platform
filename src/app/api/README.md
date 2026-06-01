@@ -15,6 +15,20 @@ Keep these links bookmarked, they are your survival guide:
 
 If you look in `src/db/index.ts`, you will notice we are using Turso through `@libsql/client` and Drizzle's `libsql` adapter. Make sure your `.env` file has `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` set.
 
+Run migrations before using a fresh Turso database:
+
+```bash
+pnpm db:migrate
+```
+
+Run the discover seed data with:
+
+```bash
+pnpm db:seed:discover
+```
+
+The seed script can be rerun safely because it uses `ON CONFLICT` upserts. Do not wrap separate Turso HTTP seed calls in a manual `BEGIN`/`ROLLBACK` transaction; the remote client may not keep that transaction active across calls.
+
 ## How to build an API Route
 
 Next.js App Router maps folders to API endpoints.
