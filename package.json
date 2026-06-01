@@ -14,7 +14,7 @@
     "format": "prettier --write . --cache"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.1.0",
+    "@libsql/client": "^0.17.3",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query": "^5.100.14",
     "@tiptap/extension-link": "^3.24.0",
@@ -36,13 +36,11 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
-    "pg": "^8.20.0",
     "prettier": "^3.8.3",
     "tailwindcss": "^4",
     "typescript": "^5"

@@ -50,7 +50,7 @@ You will notice a file called `.env.example` in the root of the project. Environ
 **Your Action Item:**
 
 1. Copy the `.env.example` file and rename the copy to `.env`.
-2. Ask the Team Lead for the actual values (like the `DATABASE_URL`) to put inside your `.env` file.
+2. Ask the Team Lead for the actual Turso values (`TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`) to put inside your `.env` file.
 3. _Note: The `.env` file is intentionally ignored by Git so your secrets stay safe!_
 
 ---

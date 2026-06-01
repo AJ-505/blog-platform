@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { users } from "@/db/schema";
-import { ilike } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { z } from "zod";
 
 const searchSchema = z.object({
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
         email: users.email,
       })
       .from(users)
-      .where(ilike(users.name, `%${query}%`));
+      .where(sql`lower(${users.name}) like ${`%${query.toLowerCase()}%`}`);
 
     return Response.json({ users: matchedUsers }, { status: 200 });
   } catch (err) {

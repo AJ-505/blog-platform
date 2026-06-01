@@ -1,7 +1,5 @@
 import "dotenv/config";
-import pg from "pg";
-
-const { Client } = pg;
+import { createClient } from "@libsql/client";
 
 const authors = [
   {
@@ -383,36 +381,33 @@ The survival rule is simple: be clear before you are annoyed. Most group project
   },
 ];
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL is not set");
+if (!process.env.TURSO_DATABASE_URL) {
+  throw new Error("TURSO_DATABASE_URL is not set");
 }
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+const client = createClient({
+  url: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN,
 });
 
-await client.connect();
+const unixSeconds = (isoDate) => Math.floor(new Date(isoDate).getTime() / 1000);
 
-try {
-  await client.query("BEGIN");
-
-  for (const author of authors) {
-    await client.query(
-      `
+for (const author of authors) {
+  await client.execute({
+    sql: `
         INSERT INTO users (username, name, email, password_hash)
-        VALUES ($1, $2, $3, $4)
+        VALUES (?, ?, ?, ?)
         ON CONFLICT (username) DO UPDATE
         SET name = EXCLUDED.name,
             email = EXCLUDED.email
       `,
-      [author.username, author.name, author.email, "seeded-discover-user"],
-    );
-  }
+    args: [author.username, author.name, author.email, "seeded-discover-user"],
+  });
+}
 
-  for (const post of posts) {
-    await client.query(
-      `
+for (const post of posts) {
+  await client.execute({
+    sql: `
         INSERT INTO posts (
           author_id,
           slug,
@@ -427,7 +422,7 @@ try {
           created_at,
           updated_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 1, $10, $10)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
         ON CONFLICT (slug) DO UPDATE
         SET author_id = EXCLUDED.author_id,
             title = EXCLUDED.title,
@@ -439,30 +434,24 @@ try {
             comment_count = EXCLUDED.comment_count,
             is_discover = EXCLUDED.is_discover,
             created_at = EXCLUDED.created_at,
-            updated_at = NOW()
+            updated_at = unixepoch()
       `,
-      [
-        post.authorId,
-        post.slug,
-        post.title,
-        post.excerpt,
-        post.content,
-        post.badge,
-        post.imageKey,
-        post.likes,
-        post.commentCount,
-        post.createdAt,
-      ],
-    );
-  }
-
-  await client.query("COMMIT");
-  console.log(
-    `Seeded ${authors.length} authors and ${posts.length} discover posts.`,
-  );
-} catch (error) {
-  await client.query("ROLLBACK");
-  throw error;
-} finally {
-  await client.end();
+    args: [
+      post.authorId,
+      post.slug,
+      post.title,
+      post.excerpt,
+      post.content,
+      post.badge,
+      post.imageKey,
+      post.likes,
+      post.commentCount,
+      unixSeconds(post.createdAt),
+      unixSeconds(post.createdAt),
+    ],
+  });
 }
+
+console.log(
+  `Seeded ${authors.length} authors and ${posts.length} discover posts.`,
+);

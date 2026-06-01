@@ -1,16 +1,14 @@
-import type { Config } from "drizzle-kit";
+import { defineConfig } from "drizzle-kit";
 import { config } from "dotenv";
 
 config({ path: ".env" });
 
-const databaseUrl = new URL(process.env.DATABASE_URL!);
-databaseUrl.searchParams.set("sslmode", "require");
-
-export default {
+export default defineConfig({
   schema: "./src/db/schema.ts",
   out: "./drizzle",
-  dialect: "postgresql",
+  dialect: "turso",
   dbCredentials: {
-    url: databaseUrl.toString(),
+    url: process.env.TURSO_DATABASE_URL!,
+    authToken: process.env.TURSO_AUTH_TOKEN,
   },
-} satisfies Config;
+});

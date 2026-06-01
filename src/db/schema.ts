@@ -1,22 +1,23 @@
 import {
-  pgTable,
-  serial,
+  sqliteTable,
   text,
-  timestamp,
   integer,
   primaryKey,
-} from "drizzle-orm/pg-core";
+} from "drizzle-orm/sqlite-core";
+import { sql } from "drizzle-orm";
 
-export const users = pgTable("users", {
+export const users = sqliteTable("users", {
   username: text("username").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
 });
 
-export const posts = pgTable("posts", {
-  id: serial("id").primaryKey(),
+export const posts = sqliteTable("posts", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   authorId: text("author_id")
     .notNull()
     .references(() => users.username, { onDelete: "cascade" }),
@@ -29,12 +30,16 @@ export const posts = pgTable("posts", {
   likes: integer("likes").default(0).notNull(),
   commentCount: integer("comment_count").default(0).notNull(),
   isDiscover: integer("is_discover").default(0).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
 });
 
-export const comments = pgTable("comments", {
-  id: serial("id").primaryKey(),
+export const comments = sqliteTable("comments", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   postId: integer("post_id")
     .notNull()
     .references(() => posts.id, { onDelete: "cascade" }),
@@ -42,10 +47,12 @@ export const comments = pgTable("comments", {
     .notNull()
     .references(() => users.username, { onDelete: "cascade" }),
   content: text("content").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
 });
 
-export const follows = pgTable(
+export const follows = sqliteTable(
   "follows",
   {
     followerId: text("follower_id")
@@ -54,7 +61,9 @@ export const follows = pgTable(
     followingId: text("following_id")
       .notNull()
       .references(() => users.username, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
   },
   (table) => [primaryKey({ columns: [table.followerId, table.followingId] })],
 );

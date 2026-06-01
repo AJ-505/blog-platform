@@ -8,7 +8,7 @@ export const SESSION_COOKIE = "scribbled_session";
 function sessionSecret() {
   return (
     process.env.AUTH_SECRET ??
-    process.env.DATABASE_URL ??
+    process.env.TURSO_DATABASE_URL ??
     "scribbled-local-dev-session-secret"
   );
 }
