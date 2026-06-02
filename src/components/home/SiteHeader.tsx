@@ -10,6 +10,7 @@ import { startRouteProgress } from "@/components/RouteProgress";
 const NAV_ITEMS = [
   { label: "Discover", href: "/discover" },
   { label: "Feed", href: "/feed" },
+  { label: "Authors", href: "/authors" },
   { label: "Creators", href: "/studio/create-post" },
   { label: "Studio", href: "/studio" },
 ];
