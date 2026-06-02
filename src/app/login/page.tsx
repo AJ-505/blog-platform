@@ -125,18 +125,27 @@ export default function LoginPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  className="btn-secondary py-3 rounded-xl border border-black/10"
-                >
-                  Google
-                </button>
-                <button
-                  type="button"
-                  className="btn-secondary py-3 rounded-xl border border-black/10"
-                >
-                  Apple
-                </button>
+
+                {/* Google button — links to /google-signin */}
+                <Link href="/google-signin" className="w-full">
+                  <button
+                    type="button"
+                    className="btn-secondary py-3 rounded-xl border border-black/10 w-full"
+                  >
+                    Google
+                  </button>
+                </Link>
+
+                {/* Apple button — links to /apple-signin */}
+                <Link href="/apple-signin" className="w-full">
+                  <button
+                    type="button"
+                    className="btn-secondary py-3 rounded-xl border border-black/10 w-full"
+                  >
+                    Apple
+                  </button>
+                </Link>
+
               </div>
 
               <p className="pt-4 text-sm text-on-surface-variant text-center">
