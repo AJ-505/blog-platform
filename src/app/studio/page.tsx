@@ -76,43 +76,6 @@ function UploadIcon({ className }: { className?: string }) {
   );
 }
 
-function ChartIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
-      <path
-        d="M4 19V5"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M8 19V9"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M12 19V12"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M16 19V7"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M20 19V10"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
 function SettingsIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
@@ -317,10 +280,11 @@ export default async function StudioPage() {
                 icon={UploadIcon}
                 href="/studio/manage-blogs"
               />
-              <SidebarLink label="Published" icon={UploadIcon} href="#" />
-              <SidebarLink label="Analytics" icon={ChartIcon} href="#" />
-
-              <SidebarLink label="Settings" icon={SettingsIcon} href="/settings" />
+              <SidebarLink
+                label="Settings"
+                icon={SettingsIcon}
+                href="/settings"
+              />
             </nav>
           </aside>
 
