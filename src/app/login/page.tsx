@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { saveUser, type AuthUser } from "@/lib/auth";
@@ -31,6 +31,12 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [authQuery, setAuthQuery] = useState("");
+
+  useEffect(() => {
+    const next = new URLSearchParams(window.location.search).get("next");
+    setAuthQuery(next ? `?next=${encodeURIComponent(next)}` : "");
+  }, []);
 
   const mutation = useMutation({
     mutationFn: login,
@@ -151,7 +157,7 @@ export default function LoginPage() {
               <p className="pt-4 text-sm text-on-surface-variant text-center">
                 New to SCRIBBLED?{" "}
                 <Link
-                  href="/signup"
+                  href={`/signup${authQuery}`}
                   className="font-semibold text-primary underline"
                 >
                   Create an account

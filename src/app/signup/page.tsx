@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { saveUser, type AuthUser } from "@/lib/auth";
@@ -10,6 +10,28 @@ import { saveUser, type AuthUser } from "@/lib/auth";
 import digitalImg from "@/assets/Digital.png";
 
 type SignupResponse = { message: string; user: AuthUser };
+
+type SignupError = {
+  error?: string;
+  // Field-level messages from the API's zod validation, e.g.
+  // { username: ["Username may only contain letters, numbers and underscores"] }
+  details?: Record<string, string[] | undefined>;
+};
+
+// Turn the API response into a single, human-readable message. We prefer the
+// specific field errors (so the user learns *why* it failed) and only fall
+// back to the generic top-level error when there are none.
+function messageFromError(data: SignupError): string {
+  const fieldMessages = Object.values(data?.details ?? {})
+    .flatMap((messages) => messages ?? [])
+    .filter(Boolean);
+
+  if (fieldMessages.length > 0) {
+    return fieldMessages.join(" ");
+  }
+
+  return data?.error ?? "Unable to create your account. Please try again.";
+}
 
 async function signup(input: {
   username: string;
@@ -26,9 +48,7 @@ async function signup(input: {
   const data = await res.json();
 
   if (!res.ok) {
-    throw new Error(
-      data?.error ?? "Unable to create your account. Please try again.",
-    );
+    throw new Error(messageFromError(data as SignupError));
   }
 
   return data as SignupResponse;
@@ -41,6 +61,12 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [authQuery, setAuthQuery] = useState("");
+
+  useEffect(() => {
+    const next = new URLSearchParams(window.location.search).get("next");
+    setAuthQuery(next ? `?next=${encodeURIComponent(next)}` : "");
+  }, []);
 
   const mutation = useMutation({
     mutationFn: signup,
@@ -65,7 +91,10 @@ export default function SignupPage() {
         </div>
         <div className="flex items-center gap-3 text-sm text-on-surface-variant">
           <span className="tracking-wide uppercase">Already a member?</span>
-          <Link href="/login" className="font-semibold text-on-surface">
+          <Link
+            href={`/login${authQuery}`}
+            className="font-semibold text-on-surface"
+          >
             Sign in
           </Link>
         </div>
@@ -170,6 +199,9 @@ export default function SignupPage() {
                     autoCorrect="off"
                     required
                   />
+                  <p className="mt-1.5 text-xs text-on-surface-variant">
+                    Letters, numbers and underscores only — no spaces or dashes.
+                  </p>
                 </div>
 
                 <div>
