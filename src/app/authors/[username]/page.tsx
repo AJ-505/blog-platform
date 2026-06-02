@@ -9,6 +9,8 @@ import { SiteHeader } from "@/components/home/SiteHeader";
 import { getLikedPostIds } from "@/lib/likes";
 import { getCurrentUser } from "@/lib/server-auth";
 import { LikeButton } from "@/components/LikeButton";
+import { FollowButton } from "@/components/FollowButton";
+import { and } from "drizzle-orm";
 
 import artImg from "@/assets/Art.png";
 import bookImg from "@/assets/Book.png";
@@ -201,6 +203,22 @@ export default async function AuthorProfilePage({
     notFound();
   }
 
+  const isSelf = viewer?.username === username;
+  let isFollowing = false;
+  if (viewer && !isSelf) {
+    const [followRecord] = await db
+      .select({ followerId: follows.followerId })
+      .from(follows)
+      .where(
+        and(
+          eq(follows.followerId, viewer.username),
+          eq(follows.followingId, username),
+        ),
+      )
+      .limit(1);
+    isFollowing = Boolean(followRecord);
+  }
+
   const rawPosts = await db
     .select({
       id: postsTable.id,
@@ -249,7 +267,7 @@ export default async function AuthorProfilePage({
               unoptimized
             />
           </div>
-          <div>
+          <div className="flex-1">
             <h1 className="text-3xl font-bold text-[#0B1F3B]">{author.name}</h1>
             <p className="text-[#8E3B46] font-medium mt-1">
               @{author.username}
@@ -259,6 +277,16 @@ export default async function AuthorProfilePage({
               <span>Joined {author.createdAt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</span>
             </div>
           </div>
+          {!isSelf && (
+            <div className="ml-auto">
+              <FollowButton
+                followingId={author.username}
+                initialFollowing={isFollowing}
+                isAuthenticated={Boolean(viewer)}
+                redirectTo={`/authors/${author.username}`}
+              />
+            </div>
+          )}
         </div>
 
         <h2 className="text-2xl font-bold mb-6 text-[#0B1F3B]">
