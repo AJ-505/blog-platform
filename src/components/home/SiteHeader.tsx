@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, type FormEvent } from "react";
+
+import { startRouteProgress } from "@/components/RouteProgress";
 
 const NAV_ITEMS = [
   { label: "Discover", href: "/discover" },
@@ -13,6 +16,27 @@ const NAV_ITEMS = [
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+
+  function onSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const trimmed = query.trim();
+    if (!trimmed) return;
+
+    const params = new URLSearchParams({ q: trimmed });
+    const currentPath = `${window.location.pathname}${window.location.search}`;
+    const existingFrom = new URLSearchParams(window.location.search).get(
+      "from",
+    );
+    const from =
+      pathname === "/search" && existingFrom ? existingFrom : currentPath;
+
+    params.set("from", from);
+
+    startRouteProgress();
+    router.push(`/search?${params.toString()}`);
+  }
 
   // A link matches when the path equals its href or is nested under it.
   // Pick the longest match so /studio/create-post highlights "Creators",
@@ -51,7 +75,16 @@ export function SiteHeader() {
         ))}
       </nav>
       <div className="flex items-center gap-4">
-        <input className="search-input" placeholder="Search for trends" />
+        <form onSubmit={onSearch} role="search">
+          <input
+            className="search-input"
+            placeholder="Search for trends"
+            aria-label="Search posts"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+        </form>
         <Link
           href="/"
           className="btn-secondary btn-home rounded-full px-4 py-2"

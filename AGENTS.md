@@ -7,3 +7,4 @@ This version has breaking changes — APIs, conventions, and file structure may 
 <!-- END:nextjs-agent-rules -->
 
 Use pnpm, not npm.
+Do not run `pnpm build` unless the user specifically asked.
