@@ -1,5 +1,7 @@
 "use client";
 
+import type { AuthUser } from "@/lib/auth";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
@@ -21,10 +23,14 @@ function formatCommentDate(value: Date | string) {
 
 export function CommentsSection({
   postId,
+  postSlug,
   initialComments,
+  currentUser,
 }: {
   postId: number;
+  postSlug: string;
   initialComments: Comment[];
+  currentUser: AuthUser | null;
 }) {
   const router = useRouter();
   const [content, setContent] = useState("");
@@ -51,7 +57,11 @@ export function CommentsSection({
     setIsSubmitting(false);
 
     if (!response.ok) {
-      setError("Could not post your comment. Try again.");
+      if (response.status === 401) {
+        setError("Sign in to post your comment.");
+      } else {
+        setError("Could not post your comment. Try again.");
+      }
       return;
     }
 
@@ -76,33 +86,47 @@ export function CommentsSection({
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-6">
-        <label htmlFor="comment" className="sr-only">
-          Add a comment
-        </label>
-        <textarea
-          id="comment"
-          value={content}
-          onChange={(event) => setContent(event.target.value)}
-          rows={4}
-          maxLength={1000}
-          placeholder="Add your take..."
-          className="w-full resize-none rounded-2xl border border-black/10 bg-white/80 px-4 py-3 text-on-surface shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-        />
-        <div className="mt-3 flex items-center justify-between gap-4">
+      {currentUser ? (
+        <form onSubmit={handleSubmit} className="mt-6">
+          <label htmlFor="comment" className="sr-only">
+            Add a comment
+          </label>
+          <textarea
+            id="comment"
+            value={content}
+            onChange={(event) => setContent(event.target.value)}
+            rows={4}
+            maxLength={1000}
+            placeholder="Add your take..."
+            className="w-full resize-none rounded-2xl border border-black/10 bg-white/80 px-4 py-3 text-on-surface shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+          />
+          <div className="mt-3 flex items-center justify-between gap-4">
+            <p className="text-sm text-on-surface-variant">
+              Posting as {currentUser.name}
+            </p>
+            <button
+              type="submit"
+              disabled={isSubmitting || !content.trim()}
+              className="rounded-full bg-[#A95162] px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#8f4050] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isSubmitting ? "Posting..." : "Post comment"}
+            </button>
+          </div>
+          {error ? <p className="mt-3 text-sm text-red-700">{error}</p> : null}
+        </form>
+      ) : (
+        <div className="mt-6 rounded-2xl border border-black/10 bg-white/70 p-5">
           <p className="text-sm text-on-surface-variant">
-            Posting as Campus Reader
+            Sign in to join the discussion.
           </p>
-          <button
-            type="submit"
-            disabled={isSubmitting || !content.trim()}
-            className="rounded-full bg-[#A95162] px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#8f4050] disabled:cursor-not-allowed disabled:opacity-50"
+          <Link
+            href={`/login?next=${encodeURIComponent(`/article/${postSlug}`)}`}
+            className="mt-3 inline-flex rounded-full bg-[#A95162] px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#8f4050]"
           >
-            {isSubmitting ? "Posting..." : "Post comment"}
-          </button>
+            Sign in to comment
+          </Link>
         </div>
-        {error ? <p className="mt-3 text-sm text-red-700">{error}</p> : null}
-      </form>
+      )}
 
       <div className="mt-8 space-y-4">
         {initialComments.length > 0 ? (

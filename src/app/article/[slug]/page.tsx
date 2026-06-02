@@ -9,6 +9,7 @@ import { SiteHeader } from "@/components/home/SiteHeader";
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { getCommentsForPost } from "@/lib/comments";
 import { getPostBySlug } from "@/lib/posts";
+import { getCurrentUser } from "@/lib/server-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,7 @@ export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
   const dbPost = await getPostBySlug(slug);
   const postComments = dbPost ? await getCommentsForPost(dbPost.id) : [];
+  const currentUser = await getCurrentUser();
   let content = "";
 
   if (dbPost) {
@@ -90,7 +92,12 @@ export default async function ArticlePage({ params }: PageProps) {
           />
         </article>
         {dbPost ? (
-          <CommentsSection postId={dbPost.id} initialComments={postComments} />
+          <CommentsSection
+            postId={dbPost.id}
+            postSlug={dbPost.slug}
+            initialComments={postComments}
+            currentUser={currentUser}
+          />
         ) : null}
       </div>
 

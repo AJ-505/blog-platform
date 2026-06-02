@@ -1,6 +1,7 @@
 import { db } from "@/db";
-import { comments, posts, users } from "@/db/schema";
+import { comments, posts } from "@/db/schema";
 import { getCommentsForPost } from "@/lib/comments";
+import { getCurrentUser } from "@/lib/server-auth";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -11,7 +12,6 @@ const commentsSchema = z.object({
 
 const createCommentSchema = commentsSchema.extend({
   content: z.string().trim().min(1).max(1000),
-  authorId: z.string().trim().min(1).default("campus-reader"),
 });
 
 export async function GET(req: Request) {
@@ -54,19 +54,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid input" }, { status: 400 });
   }
 
-  const { postId, authorId, content } = result.data;
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser) {
+    return NextResponse.json(
+      { error: "Sign in to comment" },
+      { status: 401 },
+    );
+  }
+
+  const { postId, content } = result.data;
 
   try {
-    await db
-      .insert(users)
-      .values({
-        username: authorId,
-        name: authorId === "campus-reader" ? "Campus Reader" : authorId,
-        email: `${authorId}@comments.local`,
-        passwordHash: "comment-user",
-      })
-      .onConflictDoNothing();
-
     const [post] = await db
       .select({ id: posts.id, commentCount: posts.commentCount })
       .from(posts)
@@ -79,7 +78,7 @@ export async function POST(req: Request) {
 
     const [comment] = await db
       .insert(comments)
-      .values({ postId, authorId, content })
+      .values({ postId, authorId: currentUser.username, content })
       .returning();
 
     await db

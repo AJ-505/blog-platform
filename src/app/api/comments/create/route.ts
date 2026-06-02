@@ -1,10 +1,10 @@
 import { db } from "@/db";
 import { comments } from "@/db/schema";
+import { getCurrentUser } from "@/lib/server-auth";
 import { z } from "zod";
 
 const commentSchema = z.object({
     postId: z.number(),
-    authorId: z.string(),
     content: z.string().min(1),
 });
 
@@ -29,11 +29,20 @@ export async function POST(req: Request){
         );
     }
 
-    const { postId, authorId, content } = result.data;
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+        return Response.json(
+            { error: "Sign in to comment" },
+            { status: 401 }
+        );
+    }
+
+    const { postId, content } = result.data;
 
     await db.insert(comments).values({
         postId,
-        authorId,
+        authorId: currentUser.username,
         content,
     });
 
