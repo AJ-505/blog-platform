@@ -30,6 +30,9 @@ export const posts = sqliteTable("posts", {
   likes: integer("likes").default(0).notNull(),
   commentCount: integer("comment_count").default(0).notNull(),
   isDiscover: integer("is_discover").default(0).notNull(),
+  status: text("status", { enum: ["draft", "published"] })
+    .default("published")
+    .notNull(),
   createdAt: integer("created_at", { mode: "timestamp" })
     .default(sql`(unixepoch())`)
     .notNull(),

@@ -1,7 +1,9 @@
+import Link from "next/link";
+
 export function SiteFooter() {
   return (
     <footer className="footer py-12 mt-16 border-t border-outline-variant bg-surface-variant">
-      <div className="container mx-auto grid grid-cols-2 md:grid-cols-5 gap-8">
+      <div className="container mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
         <div>
           <h5 className="font-bold mb-2">SCRIBBLED</h5>
           <p className="text-sm text-on-surface-variant">
@@ -10,44 +12,47 @@ export function SiteFooter() {
           </p>
         </div>
         <div>
-          <h5 className="font-bold mb-2">RESOURCES</h5>
-          <ul className="text-sm space-y-1">
+          <h5 className="font-bold mb-2">EXPLORE</h5>
+          <ul className="space-y-1">
             <li>
-              <a href="#">Creator Guide</a>
+              <Link href="/discover" className="nav-link">
+                Discover
+              </Link>
             </li>
             <li>
-              <a href="#">Publishing API</a>
-            </li>
-            <li>
-              <a href="#">Themes Gallery</a>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h5 className="font-bold mb-2">PLATFORM</h5>
-          <ul className="text-sm space-y-1">
-            <li>
-              <a href="#">Premium Plan</a>
-            </li>
-            <li>
-              <a href="#">Success Stories</a>
-            </li>
-            <li>
-              <a href="#">Mobile App</a>
+              <Link href="/feed" className="nav-link">
+                Feed
+              </Link>
             </li>
           </ul>
         </div>
         <div>
-          <h5 className="font-bold mb-2">SUPPORT</h5>
-          <ul className="text-sm space-y-1">
+          <h5 className="font-bold mb-2">CREATE</h5>
+          <ul className="space-y-1">
             <li>
-              <a href="#">Help Center</a>
+              <Link href="/studio" className="nav-link">
+                Studio
+              </Link>
             </li>
             <li>
-              <a href="#">Contact Us</a>
+              <Link href="/studio/create-post" className="nav-link">
+                New Post
+              </Link>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h5 className="font-bold mb-2">ACCOUNT</h5>
+          <ul className="space-y-1">
+            <li>
+              <Link href="/settings" className="nav-link">
+                Settings
+              </Link>
             </li>
             <li>
-              <a href="#">Terms of Service</a>
+              <Link href="/login" className="nav-link">
+                Sign in
+              </Link>
             </li>
           </ul>
         </div>

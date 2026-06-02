@@ -6,15 +6,22 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 // Define the schema once — validation + types in one place
-const CreatePostSchema = z.object({
-  authorId: z.string().trim().min(1).max(30).optional(),
-  title: z.string().trim().min(1, { message: "Title is required" }),
-  excerpt: z.string().trim().max(240).optional(),
-  content: z.string().trim().min(1, { message: "Content is required" }),
-  badge: z.string().trim().max(40).optional(),
-  imageKey: z.string().trim().max(40).optional(),
-  isDiscover: z.boolean().optional(),
-});
+const CreatePostSchema = z
+  .object({
+    authorId: z.string().trim().min(1).max(30).optional(),
+    title: z.string().trim().min(1, { message: "Title is required" }),
+    excerpt: z.string().trim().max(240).optional(),
+    content: z.string().trim(),
+    badge: z.string().trim().max(40).optional(),
+    imageKey: z.string().trim().max(40).optional(),
+    isDiscover: z.boolean().optional(),
+    status: z.enum(["draft", "published"]).optional(),
+  })
+  // Published posts need a body; drafts may be saved with just a title.
+  .refine((data) => data.status === "draft" || data.content.length > 0, {
+    message: "Content is required",
+    path: ["content"],
+  });
 
 // Infer the TypeScript type for free
 type CreateBody = z.infer<typeof CreatePostSchema>;
@@ -69,8 +76,17 @@ export async function POST(req: Request) {
     );
   }
 
-  const { title, content, excerpt, badge, imageKey, isDiscover }: CreateBody =
-    result.data;
+  const {
+    title,
+    content,
+    excerpt,
+    badge,
+    imageKey,
+    isDiscover,
+    status = "published",
+  }: CreateBody = result.data;
+
+  const isDraft = status === "draft";
 
   try {
     const [author] = await db
@@ -92,7 +108,9 @@ export async function POST(req: Request) {
         content,
         badge: badge || null,
         imageKey: imageKey || null,
-        isDiscover: isDiscover ? 1 : 0,
+        // Drafts are never surfaced in Discover until published.
+        isDiscover: !isDraft && isDiscover ? 1 : 0,
+        status,
       })
       .returning();
 

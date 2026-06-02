@@ -2,14 +2,26 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import LinkExtension from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useMemo, useState } from "react";
 
 import type { AuthUser } from "@/lib/auth";
-import { editorJsonToMarkdown } from "@/lib/editor-markdown";
+import {
+  editorJsonToMarkdown,
+  markdownToEditorHtml,
+} from "@/lib/editor-markdown";
+
+export type EditorDraft = {
+  id: number;
+  title: string;
+  excerpt: string;
+  content: string;
+  badge: string | null;
+  imageKey: string | null;
+};
 
 const badgeOptions = [
   "CAMPUS LIFE",
@@ -48,14 +60,23 @@ function ToolbarButton({
   );
 }
 
-export function CreatorEditor({ user }: { user: AuthUser }) {
+export function CreatorEditor({
+  user,
+  draft,
+}: {
+  user: AuthUser;
+  draft?: EditorDraft;
+}) {
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [excerpt, setExcerpt] = useState("");
-  const [badge, setBadge] = useState("CAMPUS LIFE");
-  const [imageKey, setImageKey] = useState("book");
+  const [postId, setPostId] = useState<number | null>(draft?.id ?? null);
+  const [title, setTitle] = useState(draft?.title ?? "");
+  const [excerpt, setExcerpt] = useState(draft?.excerpt ?? "");
+  const [badge, setBadge] = useState(draft?.badge ?? "CAMPUS LIFE");
+  const [imageKey, setImageKey] = useState(draft?.imageKey ?? "book");
   const [message, setMessage] = useState("");
   const [isPublishing, setIsPublishing] = useState(false);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
 
   const editor = useEditor({
     extensions: [
@@ -70,7 +91,7 @@ export function CreatorEditor({ user }: { user: AuthUser }) {
           "Start writing. Use headings, quotes, lists, links, and code without touching markdown.",
       }),
     ],
-    content: "<p></p>",
+    content: draft?.content ? markdownToEditorHtml(draft.content) : "<p></p>",
     editorProps: {
       attributes: {
         class:
@@ -78,6 +99,22 @@ export function CreatorEditor({ user }: { user: AuthUser }) {
       },
     },
     immediatelyRender: false,
+  });
+
+  // useEditor does not re-render on selection/transaction changes in v3, so the
+  // toolbar's active states must be subscribed to explicitly to stay reactive.
+  const activeMarks = useEditorState({
+    editor,
+    selector: ({ editor }) => ({
+      heading1: editor?.isActive("heading", { level: 1 }) ?? false,
+      heading2: editor?.isActive("heading", { level: 2 }) ?? false,
+      bold: editor?.isActive("bold") ?? false,
+      italic: editor?.isActive("italic") ?? false,
+      bulletList: editor?.isActive("bulletList") ?? false,
+      orderedList: editor?.isActive("orderedList") ?? false,
+      blockquote: editor?.isActive("blockquote") ?? false,
+      link: editor?.isActive("link") ?? false,
+    }),
   });
 
   const dateLabel = useMemo(() => {
@@ -88,20 +125,58 @@ export function CreatorEditor({ user }: { user: AuthUser }) {
     });
   }, []);
 
-  function saveDraft() {
-    if (!editor) return;
-    window.localStorage.setItem(
-      "scribbled:creator-draft",
-      JSON.stringify({
-        title,
-        excerpt,
-        badge,
-        imageKey,
-        body: editor.getJSON(),
-        savedAt: new Date().toISOString(),
-      }),
-    );
-    setMessage("Draft saved in this browser.");
+  async function saveDraft() {
+    if (!editor || isSavingDraft) return;
+
+    if (!title.trim()) {
+      setMessage("Add a title before saving a draft.");
+      return;
+    }
+
+    const markdown = editorJsonToMarkdown(editor.getJSON()).trim();
+
+    setIsSavingDraft(true);
+    setMessage("");
+
+    const payload = {
+      title: title.trim(),
+      excerpt: excerpt.trim() || undefined,
+      content: markdown,
+      badge,
+      imageKey,
+      status: "draft" as const,
+    };
+
+    try {
+      // Reuse the existing draft row on subsequent saves instead of piling up
+      // a new draft every click.
+      const response = postId
+        ? await fetch("/api/posts/edit", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...payload, postId }),
+          })
+        : await fetch("/api/posts/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data?.error ?? "Could not save draft.");
+        return;
+      }
+
+      setPostId(data.post.id);
+      setLastSavedAt(new Date());
+      setMessage("Draft saved.");
+    } catch {
+      setMessage("Could not save draft. Please try again.");
+    } finally {
+      setIsSavingDraft(false);
+    }
   }
 
   async function publish() {
@@ -117,18 +192,28 @@ export function CreatorEditor({ user }: { user: AuthUser }) {
     setIsPublishing(true);
     setMessage("");
 
-    const response = await fetch("/api/posts/create", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: title.trim(),
-        excerpt: excerpt.trim() || undefined,
-        content: markdown,
-        badge,
-        imageKey,
-        isDiscover: true,
-      }),
-    });
+    const payload = {
+      title: title.trim(),
+      excerpt: excerpt.trim() || undefined,
+      content: markdown,
+      badge,
+      imageKey,
+      isDiscover: true,
+      status: "published" as const,
+    };
+
+    // Promote an existing draft in place; otherwise create a fresh post.
+    const response = postId
+      ? await fetch("/api/posts/edit", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...payload, postId }),
+        })
+      : await fetch("/api/posts/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
 
     const data = await response.json();
     setIsPublishing(false);
@@ -171,9 +256,10 @@ export function CreatorEditor({ user }: { user: AuthUser }) {
           <button
             type="button"
             onClick={saveDraft}
-            className="rounded-xl border border-black/15 bg-white px-5 py-2.5 text-sm font-semibold text-on-surface shadow-sm hover:bg-black/[0.03]"
+            disabled={isSavingDraft}
+            className="rounded-xl border border-black/15 bg-white px-5 py-2.5 text-sm font-semibold text-on-surface shadow-sm hover:bg-black/[0.03] disabled:opacity-50"
           >
-            Save draft
+            {isSavingDraft ? "Saving..." : "Save draft"}
           </button>
           <button
             type="button"
@@ -202,7 +288,14 @@ export function CreatorEditor({ user }: { user: AuthUser }) {
 
             <div className="mt-6 flex flex-wrap items-center gap-5 text-sm text-on-surface-variant">
               <div>{dateLabel}</div>
-              <div>Markdown saved automatically on publish</div>
+              <div>
+                {lastSavedAt
+                  ? `Draft saved at ${lastSavedAt.toLocaleTimeString(undefined, {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}`
+                  : "Markdown saved automatically on publish"}
+              </div>
             </div>
 
             <textarea
@@ -217,40 +310,40 @@ export function CreatorEditor({ user }: { user: AuthUser }) {
             <div className="mt-8 rounded-2xl border border-black/10 bg-white p-3 shadow-sm">
               <div className="mb-3 flex flex-wrap items-center gap-2 border-b border-black/10 pb-3">
                 <ToolbarButton
-                  label="Heading 1"
-                  active={editor?.isActive("heading", { level: 1 })}
+                  label="Heading"
+                  active={activeMarks?.heading1}
                   onClick={() =>
                     editor?.chain().focus().toggleHeading({ level: 1 }).run()
                   }
                 >
-                  H1
+                  Heading
                 </ToolbarButton>
                 <ToolbarButton
-                  label="Heading 2"
-                  active={editor?.isActive("heading", { level: 2 })}
+                  label="Subheading"
+                  active={activeMarks?.heading2}
                   onClick={() =>
                     editor?.chain().focus().toggleHeading({ level: 2 }).run()
                   }
                 >
-                  H2
+                  Subheading
                 </ToolbarButton>
                 <ToolbarButton
                   label="Bold"
-                  active={editor?.isActive("bold")}
+                  active={activeMarks?.bold}
                   onClick={() => editor?.chain().focus().toggleBold().run()}
                 >
                   B
                 </ToolbarButton>
                 <ToolbarButton
                   label="Italic"
-                  active={editor?.isActive("italic")}
+                  active={activeMarks?.italic}
                   onClick={() => editor?.chain().focus().toggleItalic().run()}
                 >
                   I
                 </ToolbarButton>
                 <ToolbarButton
                   label="Bulleted list"
-                  active={editor?.isActive("bulletList")}
+                  active={activeMarks?.bulletList}
                   onClick={() =>
                     editor?.chain().focus().toggleBulletList().run()
                   }
@@ -259,7 +352,7 @@ export function CreatorEditor({ user }: { user: AuthUser }) {
                 </ToolbarButton>
                 <ToolbarButton
                   label="Numbered list"
-                  active={editor?.isActive("orderedList")}
+                  active={activeMarks?.orderedList}
                   onClick={() =>
                     editor?.chain().focus().toggleOrderedList().run()
                   }
@@ -268,7 +361,7 @@ export function CreatorEditor({ user }: { user: AuthUser }) {
                 </ToolbarButton>
                 <ToolbarButton
                   label="Quote"
-                  active={editor?.isActive("blockquote")}
+                  active={activeMarks?.blockquote}
                   onClick={() =>
                     editor?.chain().focus().toggleBlockquote().run()
                   }
@@ -277,7 +370,7 @@ export function CreatorEditor({ user }: { user: AuthUser }) {
                 </ToolbarButton>
                 <ToolbarButton
                   label="Link"
-                  active={editor?.isActive("link")}
+                  active={activeMarks?.link}
                   onClick={setLink}
                 >
                   Link
