@@ -1,12 +1,16 @@
 import Link from "next/link";
 
 import { SiteHeader } from "@/components/home/SiteHeader";
+import { FeedShowcase } from "@/components/feed/FeedShowcase";
+import { FeedPolls } from "@/components/feed/FeedPolls";
 import {
   CATEGORIES,
   getCategoryByLabel,
   getCategoryBySlug,
 } from "@/lib/categories";
 import { getFeedPosts } from "@/lib/posts";
+import { getFeedPolls } from "@/lib/polls";
+import { getCurrentUser } from "@/lib/server-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -121,6 +125,9 @@ export default async function FeedPage({
   const activeCategory = getCategoryBySlug(categoryParam);
   const activeSlug = activeCategory?.slug;
 
+  const currentUser = await getCurrentUser();
+  const initialPolls = await getFeedPolls(currentUser?.username ?? null);
+
   // The feed is DB-backed: every published post shows here, newest first, and
   // each card links to `/article/<slug>` where it can be read and commented on.
   const posts: FeedPost[] = (await getFeedPosts()).map((post) => ({
@@ -145,7 +152,7 @@ export default async function FeedPage({
       <SiteHeader />
 
       <div className="container mx-auto max-w-[1120px] px-4 py-12 flex-1">
-        <div className="max-w-5xl">
+        <div className="max-w-3xl">
           <div className="inline-flex items-center rounded-full bg-black/5 px-5 py-2 text-xs font-semibold tracking-wide">
             THE DAILY BUZZ
           </div>
@@ -159,56 +166,79 @@ export default async function FeedPage({
             </span>
           </h1>
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Pill href="/feed" active={!activeSlug}>
-              All sparks
-            </Pill>
-            {CATEGORIES.map((cat) => (
-              <Pill
-                key={cat.slug}
-                href={`/feed?category=${cat.slug}`}
-                active={activeSlug === cat.slug}
-              >
-                {cat.label.charAt(0) + cat.label.slice(1).toLowerCase()}
+          <p className="mt-5 text-on-surface-variant leading-relaxed">
+            The campus social feed — dip into the themed spaces, weigh in on live
+            polls, and scroll the latest sparks. Here to read long-form?{" "}
+            <Link href="/discover" className="font-semibold text-[#A95162] hover:underline">
+              Head to Discover
+            </Link>
+            .
+          </p>
+        </div>
+
+        {/* Themed spaces — tappable previews into the richer feed sections. */}
+        <FeedShowcase />
+
+        <div className="mt-12 grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 items-start">
+          <div>
+            <div className="flex flex-wrap gap-3">
+              <Pill href="/feed" active={!activeSlug}>
+                All sparks
               </Pill>
-            ))}
-            <Pill href="/feed/upcoming-events">Upcoming events</Pill>
-          </div>
-
-          {activeCategory ? (
-            <p className="mt-6 text-sm text-on-surface-variant">
-              Showing{" "}
-              <span className="font-semibold text-on-surface">
-                {visiblePosts.length}
-              </span>{" "}
-              {visiblePosts.length === 1 ? "spark" : "sparks"} in{" "}
-              <span className="font-semibold text-[#A95162]">
-                {activeCategory.label}
-              </span>
-              .
-            </p>
-          ) : null}
-
-          {visiblePosts.length > 0 ? (
-            <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-              {visiblePosts.map((post) => (
-                <FeedCard key={post.id} post={post} />
+              {CATEGORIES.map((cat) => (
+                <Pill
+                  key={cat.slug}
+                  href={`/feed?category=${cat.slug}`}
+                  active={activeSlug === cat.slug}
+                >
+                  {cat.label.charAt(0) + cat.label.slice(1).toLowerCase()}
+                </Pill>
               ))}
             </div>
-          ) : (
-            <div className="mt-10 rounded-2xl border border-dashed border-black/15 bg-white/60 p-10 text-center">
-              <p className="text-on-surface-variant">
-                No sparks in this category yet. Be the first to start the
-                conversation.
+
+            {activeCategory ? (
+              <p className="mt-6 text-sm text-on-surface-variant">
+                Showing{" "}
+                <span className="font-semibold text-on-surface">
+                  {visiblePosts.length}
+                </span>{" "}
+                {visiblePosts.length === 1 ? "spark" : "sparks"} in{" "}
+                <span className="font-semibold text-[#A95162]">
+                  {activeCategory.label}
+                </span>
+                .
               </p>
-              <Link
-                href="/studio/create-post"
-                className="mt-5 inline-flex rounded-full bg-[#A95162] px-5 py-2 text-sm font-medium text-white shadow-sm hover:opacity-90"
-              >
-                Write a post
-              </Link>
-            </div>
-          )}
+            ) : null}
+
+            {visiblePosts.length > 0 ? (
+              <div className="mt-8 space-y-8">
+                {visiblePosts.map((post) => (
+                  <FeedCard key={post.id} post={post} />
+                ))}
+              </div>
+            ) : (
+              <div className="mt-8 rounded-2xl border border-dashed border-black/15 bg-white/60 p-10 text-center">
+                <p className="text-on-surface-variant">
+                  No sparks in this category yet. Be the first to start the
+                  conversation.
+                </p>
+                <Link
+                  href="/studio/create-post"
+                  className="mt-5 inline-flex rounded-full bg-[#A95162] px-5 py-2 text-sm font-medium text-white shadow-sm hover:opacity-90"
+                >
+                  Write a post
+                </Link>
+              </div>
+            )}
+          </div>
+
+          <aside className="lg:sticky lg:top-6">
+            <FeedPolls
+              initialPolls={initialPolls}
+              isAuthenticated={Boolean(currentUser)}
+              redirectTo="/feed"
+            />
+          </aside>
         </div>
       </div>
     </main>

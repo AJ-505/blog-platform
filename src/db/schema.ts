@@ -90,3 +90,49 @@ export const follows = sqliteTable(
   },
   (table) => [primaryKey({ columns: [table.followerId, table.followingId] })],
 );
+
+// Live polls on the feed. A poll is a question with a fixed set of options;
+// students vote in real time. Vote counts are denormalised onto each option
+// (`pollOptions.votes`) and kept in sync with the `pollVotes` ledger inside a
+// transaction, mirroring the postLikes pattern.
+export const polls = sqliteTable("polls", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  authorId: text("author_id")
+    .notNull()
+    .references(() => users.username, { onDelete: "cascade" }),
+  question: text("question").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+});
+
+export const pollOptions = sqliteTable("poll_options", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  pollId: integer("poll_id")
+    .notNull()
+    .references(() => polls.id, { onDelete: "cascade" }),
+  label: text("label").notNull(),
+  votes: integer("votes").default(0).notNull(),
+});
+
+// One row per (poll, user): a person votes at most once per poll, but may move
+// their vote to a different option. `optionId` records their current choice so
+// the UI can highlight it and the denormalised counters can be rebalanced.
+export const pollVotes = sqliteTable(
+  "poll_votes",
+  {
+    pollId: integer("poll_id")
+      .notNull()
+      .references(() => polls.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.username, { onDelete: "cascade" }),
+    optionId: integer("option_id")
+      .notNull()
+      .references(() => pollOptions.id, { onDelete: "cascade" }),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.pollId, table.userId] })],
+);
