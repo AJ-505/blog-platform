@@ -10,7 +10,7 @@ export default async function StudioLayout({
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login?next=/studio/creators");
+    redirect("/login?next=/studio");
   }
 
   return children;

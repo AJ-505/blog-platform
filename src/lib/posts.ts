@@ -1,6 +1,6 @@
 import { db } from "@/db";
-import { posts, users } from "@/db/schema";
-import { and, desc, eq } from "drizzle-orm";
+import { follows, posts, users } from "@/db/schema";
+import { and, desc, eq, sql } from "drizzle-orm";
 
 export async function getDiscoverPosts() {
   return db
@@ -91,6 +91,52 @@ export async function getPostsByAuthor(authorId: string) {
     .from(posts)
     .where(eq(posts.authorId, authorId))
     .orderBy(desc(posts.createdAt));
+}
+
+export async function getStudioDashboard(authorId: string) {
+  const [totals] = await db
+    .select({
+      totalPosts: sql<number>`count(*)`,
+      publishedPosts: sql<number>`sum(case when ${posts.status} = 'published' then 1 else 0 end)`,
+      draftPosts: sql<number>`sum(case when ${posts.status} = 'draft' then 1 else 0 end)`,
+      totalLikes: sql<number>`coalesce(sum(${posts.likes}), 0)`,
+      totalComments: sql<number>`coalesce(sum(${posts.commentCount}), 0)`,
+    })
+    .from(posts)
+    .where(eq(posts.authorId, authorId));
+
+  const [followers] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(follows)
+    .where(eq(follows.followingId, authorId));
+
+  const topPosts = await db
+    .select({
+      id: posts.id,
+      slug: posts.slug,
+      title: posts.title,
+      excerpt: posts.excerpt,
+      badge: posts.badge,
+      likes: posts.likes,
+      comments: posts.commentCount,
+      status: posts.status,
+      createdAt: posts.createdAt,
+      updatedAt: posts.updatedAt,
+    })
+    .from(posts)
+    .where(eq(posts.authorId, authorId))
+    .orderBy(desc(sql`${posts.likes} + ${posts.commentCount}`), desc(posts.updatedAt))
+    .limit(5);
+
+  return {
+    totalPosts: Number(totals?.totalPosts ?? 0),
+    publishedPosts: Number(totals?.publishedPosts ?? 0),
+    draftPosts: Number(totals?.draftPosts ?? 0),
+    totalLikes: Number(totals?.totalLikes ?? 0),
+    totalComments: Number(totals?.totalComments ?? 0),
+    followers: Number(followers?.count ?? 0),
+    topPosts,
+  };
 }
 
 // Load a draft (or any post) owned by `authorId` so it can be reopened in the

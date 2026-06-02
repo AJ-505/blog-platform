@@ -1,6 +1,11 @@
 import type { ComponentType } from "react";
 
+import Link from "next/link";
+import { redirect } from "next/navigation";
+
 import { SiteHeader } from "@/components/home/SiteHeader";
+import { getStudioDashboard } from "@/lib/posts";
+import { getCurrentUser } from "@/lib/server-auth";
 
 function DashboardIcon({ className }: { className?: string }) {
   return (
@@ -126,8 +131,6 @@ function SettingsIcon({ className }: { className?: string }) {
   );
 }
 
-import Link from "next/link";
-
 function SidebarLink({
   label,
   active,
@@ -203,30 +206,85 @@ function StatCard({
   );
 }
 
-function ContentRow({ title, meta }: { title: string; meta: string }) {
+function formatCount(value: number) {
+  if (value >= 1000000) return `${Math.round(value / 100000) / 10}m`;
+  if (value >= 1000) return `${Math.round(value / 100) / 10}k`;
+  return value.toLocaleString("en-US");
+}
+
+function formatTimeAgo(date: Date) {
+  const diffMs = Date.now() - date.getTime();
+  const diffMinutes = Math.max(1, Math.floor(diffMs / (1000 * 60)));
+
+  if (diffMinutes < 60) return `${diffMinutes}min ago`;
+
+  const diffHours = Math.floor(diffMinutes / 60);
+  if (diffHours < 24) return `${diffHours}hr${diffHours > 1 ? "s" : ""} ago`;
+
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+
+  return `${Math.floor(diffDays / 7)} week${diffDays >= 14 ? "s" : ""} ago`;
+}
+
+function ContentRow({
+  title,
+  meta,
+  href,
+}: {
+  title: string;
+  meta: string;
+  href: string;
+}) {
   return (
     <div className="flex items-center gap-4 py-4">
       <div className="w-12 h-12 rounded-xl bg-black/10" />
       <div className="min-w-0">
-        <div className="font-medium text-on-surface truncate">{title}</div>
+        <Link
+          href={href}
+          className="font-medium text-on-surface truncate hover:text-primary"
+        >
+          {title}
+        </Link>
         <div className="text-sm text-on-surface-variant">{meta}</div>
       </div>
       <div className="ml-auto flex items-center gap-4 text-on-surface-variant">
-        <button type="button" className="hover:text-primary">
+        <Link href={href} className="hover:text-primary" aria-label={`Open ${title}`}>
           ✎
-        </button>
-        <button type="button" className="hover:text-primary">
+        </Link>
+        <Link
+          href="/studio/manage-blogs"
+          className="hover:text-primary"
+          aria-label="Manage blogs"
+        >
           ▦
-        </button>
-        <button type="button" className="hover:text-primary">
+        </Link>
+        <Link
+          href="/studio/manage-blogs"
+          className="hover:text-primary"
+          aria-label="More actions"
+        >
           ⋯
-        </button>
+        </Link>
       </div>
     </div>
   );
 }
 
-export default function StudioPage() {
+export default async function StudioPage() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login?next=/studio");
+  }
+
+  const dashboard = await getStudioDashboard(user.username);
+  const interactions = dashboard.totalLikes + dashboard.totalComments;
+  const engagementRate =
+    dashboard.totalPosts > 0
+      ? Math.round((interactions / dashboard.totalPosts) * 10) / 10
+      : 0;
+
   return (
     <main className="min-h-screen flex flex-col">
       <SiteHeader />
@@ -271,10 +329,11 @@ export default function StudioPage() {
             <div className="flex items-start justify-between gap-6">
               <div>
                 <h1 className="text-4xl md:text-5xl font-semibold text-primary">
-                  Welcome back, Elena
+                  Welcome back, {user.name}
                 </h1>
                 <p className="mt-2 text-on-surface-variant">
-                  Your visionary insights reached 12.4k new readers this week.
+                  Signed in as @{user.username}. Your studio is using live
+                  posts, followers, likes, and comments.
                 </p>
               </div>
             </div>
@@ -282,20 +341,24 @@ export default function StudioPage() {
             <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2">
                 <StatCard
-                  label="Total impressions"
-                  value="142.8k"
-                  sub="+2.4% from last month"
+                  label="Total posts"
+                  value={formatCount(dashboard.totalPosts)}
+                  sub={`${formatCount(dashboard.publishedPosts)} published, ${formatCount(dashboard.draftPosts)} drafts`}
                   tone="light"
                 />
               </div>
               <div className="lg:col-span-1">
-                <StatCard label="New followers" value="1,240" tone="dark" />
+                <StatCard
+                  label="Followers"
+                  value={formatCount(dashboard.followers)}
+                  tone="dark"
+                />
               </div>
               <div className="lg:col-span-1">
                 <StatCard
-                  label="Engagement rate"
-                  value="8.4%"
-                  sub="Top 5% in Literary category"
+                  label="Avg engagement"
+                  value={formatCount(engagementRate)}
+                  sub={`${formatCount(interactions)} total interactions`}
                   tone="mint"
                 />
               </div>
@@ -305,23 +368,33 @@ export default function StudioPage() {
                     <div className="text-2xl font-semibold text-primary">
                       Content Performance
                     </div>
-                    <a
-                      href="#"
+                    <Link
+                      href="/studio/manage-blogs"
                       className="text-sm font-medium text-on-surface-variant hover:text-primary"
                     >
                       View All →
-                    </a>
+                    </Link>
                   </div>
 
                   <div className="mt-4 divide-y divide-black/10">
-                    <ContentRow
-                      title="The Architecture of Silence"
-                      meta="Published 2 days ago • 4.2k views"
-                    />
-                    <ContentRow
-                      title="Digital Poetics in the AI Era"
-                      meta="Published 1 week ago • 8.9k views"
-                    />
+                    {dashboard.topPosts.length === 0 ? (
+                      <div className="py-8 text-sm text-on-surface-variant">
+                        No posts yet. Draft or publish a story to see it here.
+                      </div>
+                    ) : (
+                      dashboard.topPosts.map((post) => (
+                        <ContentRow
+                          key={post.id}
+                          title={post.title}
+                          meta={`${post.status === "published" ? "Published" : "Draft updated"} ${formatTimeAgo(post.updatedAt)} • ${formatCount(post.likes)} likes • ${formatCount(post.comments)} comments`}
+                          href={
+                            post.status === "published"
+                              ? `/article/${post.slug}`
+                              : `/studio/creators?draft=${post.id}`
+                          }
+                        />
+                      ))
+                    )}
                   </div>
                 </div>
               </div>

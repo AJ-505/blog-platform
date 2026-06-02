@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { saveUser, type AuthUser } from "@/lib/auth";
 
@@ -56,25 +56,20 @@ async function signup(input: {
 
 export default function SignupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [authQuery, setAuthQuery] = useState("");
-
-  useEffect(() => {
-    const next = new URLSearchParams(window.location.search).get("next");
-    setAuthQuery(next ? `?next=${encodeURIComponent(next)}` : "");
-  }, []);
+  const nextPath = searchParams.get("next");
+  const authQuery = nextPath ? `?next=${encodeURIComponent(nextPath)}` : "";
 
   const mutation = useMutation({
     mutationFn: signup,
     onSuccess: (data) => {
       saveUser(data.user);
-      const nextPath =
-        new URLSearchParams(window.location.search).get("next") || "/studio";
-      router.push(nextPath);
+      router.push(nextPath || "/studio");
     },
   });
 
