@@ -1,13 +1,15 @@
 import { z } from "zod"
 import { db } from "@/db"
 import { posts } from "@/db/schema"
+import { getCurrentUser } from "@/lib/server-auth"
 import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 
-// Define the schema once — validation + types in one place
+// Define the schema once — validation + types in one place. The author is taken
+// from the session, never the request body, so a caller can't delete posts they
+// don't own by spoofing an authorId.
 const DeletePostSchema = z.object({
-    authorId: z.string().min(1, { message: "Username is required" }),
     postId: z.coerce.number().min(1, { message: "Post ID is required" })
 });
 
@@ -33,17 +35,26 @@ export async function DELETE(req: Request) {
     )
   }
 
-  // result.data is now fully typed as DeleteBody 
-  const { authorId, postId }: DeleteBody = result.data
+  const currentUser = await getCurrentUser();
 
-  
+  if (!currentUser) {
+    return NextResponse.json(
+      { error: "You must be signed in to delete a post" },
+      { status: 401 },
+    );
+  }
+
+  // result.data is now fully typed as DeleteBody
+  const { postId }: DeleteBody = result.data
+
+
   const [post] = await db.select().from(posts).where(eq(posts.id, postId))
 
   if (!post) {
     return NextResponse.json({ error: "Post not found" }, { status: 404 })
   }
 
-  if (post.authorId !== authorId) {
+  if (post.authorId !== currentUser.username) {
     return NextResponse.json(
         { error: "Only authors can delete their posts"},
         { status: 403 }

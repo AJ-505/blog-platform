@@ -58,14 +58,14 @@ export function SiteHeader() {
         >
           Home
         </Link>
-        <button
-          type="button"
+        <Link
+          href="/settings"
           className="profile-icon w-10 h-10 rounded-full bg-primary/10 border border-black/10 flex items-center justify-center"
-          aria-label="Profile"
-          title="Profile"
+          aria-label="Settings"
+          title="Settings"
         >
           <span className="text-primary font-semibold">👤</span>
-        </button>
+        </Link>
       </div>
     </header>
   );

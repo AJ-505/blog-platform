@@ -8,7 +8,9 @@ import LinkExtension from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useMemo, useState } from "react";
 
+import { startRouteProgress } from "@/components/RouteProgress";
 import type { AuthUser } from "@/lib/auth";
+import { CATEGORY_LABELS } from "@/lib/categories";
 import {
   editorJsonToMarkdown,
   markdownToEditorHtml,
@@ -23,14 +25,7 @@ export type EditorDraft = {
   imageKey: string | null;
 };
 
-const badgeOptions = [
-  "CAMPUS LIFE",
-  "CAMPUS FASHION",
-  "ROOMMATE DRAMA",
-  "ACADEMICS",
-  "STUDY",
-  "SCRIBBLED ORIGINAL",
-];
+const badgeOptions = CATEGORY_LABELS;
 
 function ToolbarButton({
   active,
@@ -223,6 +218,7 @@ export function CreatorEditor({
       return;
     }
 
+    startRouteProgress();
     router.push(`/article/${data.post.slug}`);
   }
 

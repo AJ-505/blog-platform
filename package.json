@@ -10,6 +10,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:check": "drizzle-kit check",
     "db:seed:discover": "node scripts/seed-discover.mjs",
+    "db:seed:feed": "node scripts/seed-feed.mjs",
     "lint": "eslint",
     "format": "prettier --write . --cache"
   },

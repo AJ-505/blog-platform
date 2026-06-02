@@ -55,6 +55,26 @@ export const comments = sqliteTable("comments", {
     .notNull(),
 });
 
+// Tracks which user liked which post. The composite primary key makes a like
+// idempotent (a user can like a post at most once) and lets us show whether the
+// current viewer has already liked a post. The denormalised `posts.likes`
+// counter is kept in sync alongside writes to this table.
+export const postLikes = sqliteTable(
+  "post_likes",
+  {
+    postId: integer("post_id")
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.username, { onDelete: "cascade" }),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.postId, table.userId] })],
+);
+
 export const follows = sqliteTable(
   "follows",
   {

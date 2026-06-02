@@ -1,79 +1,85 @@
-import Image from "next/image";
+import { redirect } from "next/navigation";
 
 import { SiteHeader } from "@/components/home/SiteHeader";
+import { ManageBlogsView } from "@/components/studio/ManageBlogsView";
+import { getCategoryByLabel } from "@/lib/categories";
+import { getPostsByAuthor } from "@/lib/posts";
+import { getCurrentUser } from "@/lib/server-auth";
 
 import artImg from "@/assets/Art.png";
-import ballImg from "@/assets/Ball.png";
 import bookImg from "@/assets/Book.png";
+import discoverImg from "@/assets/Discover.png";
+import retroImg from "@/assets/Retro.png";
 
-type BlogItem = {
-  id: string;
-  status: "PUBLISHED" | "DRAFT";
-  dateLabel: string;
-  category: string;
-  title: string;
-  stats?: {
-    views?: string;
-    likes?: string;
-    comments?: string;
-  };
-  image: unknown;
-};
+// Mirrors the cover keys offered in the studio editor.
+const imageByKey = {
+  art: artImg,
+  book: bookImg,
+  discover: discoverImg,
+  retro: retroImg,
+} as const;
 
-const BLOGS: BlogItem[] = [
-  {
-    id: "1",
-    status: "PUBLISHED",
-    dateLabel: "May 23, 2026",
-    category: "LIFESTYLE",
-    title: "The unspoken rules of the 3rd floor library",
-    stats: { views: "12.4k", likes: "6k", comments: "350" },
-    image: artImg,
-  },
-  {
-    id: "2",
-    status: "DRAFT",
-    dateLabel: "Saved 2hrs ago",
-    category: "DRAMA",
-    title: "Why your roommates 3am ramen is a problem",
-    image: ballImg,
-  },
-  {
-    id: "3",
-    status: "PUBLISHED",
-    dateLabel: "June 23, 2026",
-    category: "ACADEMIC",
-    title: "Exam survival ,the coffee vs.Sleep debates",
-    stats: { views: "1.4k", likes: "866", comments: "35" },
-    image: bookImg,
-  },
-];
+function formatTimeAgo(date: Date) {
+  const diffMs = Date.now() - date.getTime();
+  const diffMinutes = Math.max(1, Math.floor(diffMs / (1000 * 60)));
 
-function StatusPill({ status }: { status: BlogItem["status"] }) {
-  const cls =
-    status === "PUBLISHED"
-      ? "bg-emerald-100 text-emerald-700"
-      : "bg-black/10 text-on-surface-variant";
-  return (
-    <div
-      className={`inline-flex items-center px-6 py-2 rounded-full text-sm font-semibold ${cls}`}
-    >
-      {status}
-    </div>
-  );
+  if (diffMinutes < 60) {
+    return `${diffMinutes}min`;
+  }
+
+  const diffHours = Math.floor(diffMinutes / 60);
+  if (diffHours < 24) {
+    return `${diffHours}hr${diffHours > 1 ? "s" : ""}`;
+  }
+
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 7) {
+    return `${diffDays} day${diffDays > 1 ? "s" : ""}`;
+  }
+
+  return `${Math.floor(diffDays / 7)} week${diffDays >= 14 ? "s" : ""}`;
 }
 
-function Stat({ icon, value }: { icon: string; value?: string }) {
-  if (!value) return null;
-  return (
-    <div className="flex items-center gap-2 text-sm text-on-surface-variant">
-      <span aria-hidden>{icon}</span>
-      <span className="font-medium text-on-surface">{value}</span>
-    </div>
-  );
+function formatDate(date: Date) {
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
-export default function ManageBlogsPage() {
+export default async function ManageBlogsPage() {
+  const user = await getCurrentUser();
+
+  // Belt-and-suspenders: the studio layout already gates this, but never render
+  // someone else's manage view if the session is missing here.
+  if (!user) {
+    redirect("/login?next=/studio/manage-blogs");
+  }
+
+  const rows = await getPostsByAuthor(user.username);
+
+  const blogs = rows.map((post) => ({
+    id: post.id,
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    category: post.badge ?? "UNCATEGORIZED",
+    categorySlug: getCategoryByLabel(post.badge)?.slug ?? "uncategorized",
+    status: (post.status === "published" ? "PUBLISHED" : "DRAFT") as
+      | "PUBLISHED"
+      | "DRAFT",
+    dateLabel:
+      post.status === "published"
+        ? formatDate(post.createdAt)
+        : `Saved ${formatTimeAgo(post.updatedAt)} ago`,
+    likes: post.likes,
+    comments: post.comments,
+    image: post.imageKey
+      ? (imageByKey[post.imageKey as keyof typeof imageByKey] ?? null)
+      : null,
+  }));
+
   return (
     <main className="min-h-screen flex flex-col">
       <SiteHeader />
@@ -94,82 +100,7 @@ export default function ManageBlogsPage() {
             with latest tea
           </p>
 
-          <div className="mt-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <input
-              className="w-full md:w-[520px] h-12 rounded-xl border border-black/10 bg-white/70 backdrop-blur px-4 outline-none"
-              placeholder="Search by title other or keywords..."
-            />
-            <button
-              type="button"
-              className="btn-secondary px-8 py-3 rounded-full border border-black/10"
-            >
-              All Categories
-            </button>
-          </div>
-
-          <div className="mt-10 space-y-6">
-            {BLOGS.map((b) => (
-              <article
-                key={b.id}
-                className="rounded-3xl border border-black/10 bg-white/55 backdrop-blur shadow-sm overflow-hidden"
-              >
-                <div className="grid grid-cols-1 md:grid-cols-[220px_1fr_120px] gap-6 items-center p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-[170px] h-[110px] rounded-2xl overflow-hidden bg-black/5">
-                      <div className="absolute top-2 left-2 px-3 py-1 rounded-full bg-white/80 text-[10px] font-semibold tracking-wide">
-                        {b.category}
-                      </div>
-                      <Image
-                        src={b.image as never}
-                        alt={b.title}
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-6">
-                      <StatusPill status={b.status} />
-                      <div className="text-on-surface-variant font-semibold">
-                        {b.dateLabel}
-                      </div>
-                    </div>
-
-                    <h2 className="mt-4 text-2xl md:text-3xl font-medium text-on-surface">
-                      {b.title}
-                    </h2>
-
-                    {b.stats ? (
-                      <div className="mt-4 flex flex-wrap items-center gap-10">
-                        <Stat icon="👁" value={b.stats.views} />
-                        <Stat icon="❤" value={b.stats.likes} />
-                        <Stat icon="💬" value={b.stats.comments} />
-                      </div>
-                    ) : null}
-                  </div>
-
-                  <div className="flex md:flex-col items-center justify-end gap-4">
-                    <button
-                      type="button"
-                      className="w-11 h-11 rounded-full bg-black/10 hover:bg-black/15"
-                      aria-label="Edit"
-                      title="Edit"
-                    >
-                      ✎
-                    </button>
-                    <button
-                      type="button"
-                      className="w-11 h-11 rounded-full bg-black/10 hover:bg-black/15"
-                      aria-label="Delete"
-                      title="Delete"
-                    >
-                      🗑
-                    </button>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+          <ManageBlogsView blogs={blogs} />
         </div>
       </div>
     </main>

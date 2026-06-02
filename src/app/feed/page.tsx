@@ -1,42 +1,27 @@
 import Link from "next/link";
 
 import { SiteHeader } from "@/components/home/SiteHeader";
+import {
+  CATEGORIES,
+  getCategoryByLabel,
+  getCategoryBySlug,
+} from "@/lib/categories";
+import { getFeedPosts } from "@/lib/posts";
+
+export const dynamic = "force-dynamic";
 
 type FeedPost = {
-  id: string;
+  id: number;
+  slug: string;
+  /** Category slug derived from the post badge; drives the URL filter. */
+  category: string | undefined;
+  kind: "original" | "trending";
   title: string;
   author: string;
   description: string;
   likes: number;
   comments: number;
-  topic?: string;
-  timeAgo?: string;
 };
-
-const POSTS: FeedPost[] = [
-  {
-    id: "1",
-    title: "Still a Writer, Even When I Wasn't Writing",
-    author: "Akunnа",
-    description:
-      "If I had been told that somewhere along the line I would not only stop writing every day, but would also begin to dread putting my thoughts down — or worse, feel indifferent about sharing them — I would have laughed at the person who said it.",
-    likes: 32,
-    comments: 10,
-    topic: "THE DAILY BUZZ",
-    timeAgo: "12m ago",
-  },
-  {
-    id: "2",
-    title: "Campus Conversations: roommate drama is an extreme sport",
-    author: "Saffron Collins",
-    description:
-      "Let me dish you a mix of trending news + peppered entertainment tea from around campus.",
-    likes: 1000,
-    comments: 450,
-    topic: "CAMPUS",
-    timeAgo: "1h ago",
-  },
-];
 
 function Pill({
   children,
@@ -45,24 +30,16 @@ function Pill({
 }: {
   children: React.ReactNode;
   active?: boolean;
-  href?: string;
+  href: string;
 }) {
   const className = active
     ? "px-5 py-2 rounded-full bg-[#A95162] text-white text-sm font-medium shadow-sm"
     : "px-5 py-2 rounded-full bg-black/10 text-on-surface text-sm font-medium transition hover:bg-[#F6D3C7] hover:text-primary hover:shadow-sm hover:-translate-y-[1px] border border-transparent hover:border-black/10";
 
-  if (href) {
-    return (
-      <Link href={href} className={className}>
-        {children}
-      </Link>
-    );
-  }
-
   return (
-    <button className={className} type="button">
+    <Link href={href} className={className}>
       {children}
-    </button>
+    </Link>
   );
 }
 
@@ -75,23 +52,39 @@ function Stat({ icon, value }: { icon: string; value: string }) {
   );
 }
 
-function OriginalPostCard({ post }: { post: FeedPost }) {
+function formatCount(value: number) {
+  return value >= 1000 ? `${Math.round(value / 100) / 10}k` : `${value}`;
+}
+
+function FeedCard({ post }: { post: FeedPost }) {
+  const accent = post.kind === "trending" ? "TRENDING" : "ORIGINAL";
+  const category = getCategoryBySlug(post.category);
+
   return (
-    <article className="rounded-2xl border border-black/10 bg-white/75 backdrop-blur shadow-sm overflow-hidden">
+    <article className="rounded-2xl border border-black/10 bg-white/75 backdrop-blur shadow-sm overflow-hidden transition hover:-translate-y-0.5 hover:shadow-md">
       <div className="p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <div className="inline-flex items-center rounded-full bg-black/5 px-3 py-1 text-[11px] font-semibold tracking-wide text-on-surface-variant">
-              ORIGINAL
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center rounded-full bg-black/5 px-3 py-1 text-[11px] font-semibold tracking-wide text-on-surface-variant">
+                {accent}
+              </span>
+              {category ? (
+                <span className="inline-flex items-center rounded-full bg-[#A95162]/10 px-3 py-1 text-[11px] font-semibold tracking-wide text-[#A95162]">
+                  {category.label}
+                </span>
+              ) : null}
             </div>
 
-            <h2 className="mt-4 text-2xl md:text-3xl font-semibold text-on-surface leading-snug">
-              {post.title}
-            </h2>
+            <Link href={`/article/${post.slug}`} className="group block">
+              <h2 className="mt-4 text-2xl md:text-3xl font-semibold text-on-surface leading-snug group-hover:text-primary transition-colors">
+                {post.title}
+              </h2>
 
-            <p className="mt-3 text-sm text-on-surface-variant leading-relaxed">
-              {post.description}
-            </p>
+              <p className="mt-3 text-sm text-on-surface-variant leading-relaxed">
+                {post.description}
+              </p>
+            </Link>
           </div>
 
           <button
@@ -105,162 +98,48 @@ function OriginalPostCard({ post }: { post: FeedPost }) {
         <div className="mt-5 flex items-center justify-between">
           <div className="text-sm text-on-surface-variant">• {post.author}</div>
 
-          <div className="flex items-center gap-6">
-            <Stat icon="♡" value={`${post.likes}`} />
-            <Stat icon="💬" value={`${post.comments}`} />
-          </div>
+          <Link
+            href={`/article/${post.slug}`}
+            className="flex items-center gap-6 hover:opacity-80"
+            aria-label={`Read and comment on ${post.title}`}
+          >
+            <Stat icon="♡" value={formatCount(post.likes)} />
+            <Stat icon="💬" value={formatCount(post.comments)} />
+          </Link>
         </div>
       </div>
     </article>
   );
 }
 
-function NewestCard() {
-  return (
-    <section className="rounded-2xl border border-black/10 bg-white/70 backdrop-blur shadow-sm p-5">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-full bg-black/10" />
-          <div className="min-w-0">
-            <div className="text-xs tracking-wide uppercase text-on-surface-variant">
-              Posted 15hrs ago
-            </div>
-            <div className="mt-1 font-semibold text-on-surface">IKWEJI MAN</div>
-            <div className="mt-1 text-[11px] text-on-surface-variant">
-              POSED THIS
-            </div>
-          </div>
-        </div>
+export default async function FeedPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const { category: categoryParam } = await searchParams;
+  const activeCategory = getCategoryBySlug(categoryParam);
+  const activeSlug = activeCategory?.slug;
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="rounded-full bg-[#A95162] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-90"
-          >
-            Subscribe
-          </button>
-          <span className="rounded-full bg-black/5 px-3 py-1 text-[11px] font-semibold text-on-surface-variant">
-            Relatable
-          </span>
-        </div>
-      </div>
+  // The feed is DB-backed: every published post shows here, newest first, and
+  // each card links to `/article/<slug>` where it can be read and commented on.
+  const posts: FeedPost[] = (await getFeedPosts()).map((post) => ({
+    id: post.id,
+    slug: post.slug,
+    category: getCategoryByLabel(post.badge)?.slug,
+    // "Trending" is just a high-engagement marker; everything else is original.
+    kind: post.likes >= 1000 ? "trending" : "original",
+    title: post.title,
+    author: post.author,
+    description: post.excerpt,
+    likes: post.likes,
+    comments: post.comments,
+  }));
 
-      <p className="mt-4 text-sm text-on-surface-variant leading-relaxed">
-        “If the library vending machine swallows my last $5 for a Red Bull at 3
-        AM one more time, I’m officially starting a revolution. Who’s with me?”
-      </p>
+  const visiblePosts = activeSlug
+    ? posts.filter((post) => post.category === activeSlug)
+    : posts;
 
-      <div className="mt-3 text-sm text-secondary font-semibold">
-        #ExamSurvival
-      </div>
-
-      <div className="mt-5 flex items-center gap-2 text-xs text-on-surface-variant">
-        <span className="inline-flex -space-x-2">
-          <span className="w-7 h-7 rounded-full bg-pink-400 ring-2 ring-white" />
-          <span className="w-7 h-7 rounded-full bg-orange-300 ring-2 ring-white" />
-          <span className="w-7 h-7 rounded-full bg-violet-300 ring-2 ring-white" />
-        </span>
-        <span>200 Students checking the vibe</span>
-      </div>
-    </section>
-  );
-}
-
-function WeeklyHotTakeCard() {
-  return (
-    <section className="rounded-2xl border border-black/10 bg-white/75 backdrop-blur shadow-sm p-5">
-      <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-on-surface-variant">
-        <span aria-hidden>⚡</span>
-        <span>WEEKLY HOT TAKE</span>
-      </div>
-
-      <p className="mt-4 text-xl md:text-2xl font-semibold text-on-surface leading-snug">
-        “Campus coffee tastes like burnt disappointment but we still queue for
-        20 minutes every morning. Why are we like this?”
-      </p>
-
-      <div className="mt-5 space-y-3">
-        <button
-          type="button"
-          className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-left text-sm hover:bg-black/5"
-        >
-          I’m addicted
-        </button>
-        <button
-          type="button"
-          className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-left text-sm hover:bg-black/5"
-        >
-          Just here for the vibe
-        </button>
-      </div>
-
-      <div className="mt-5 flex items-center justify-between text-xs text-on-surface-variant">
-        <span>
-          <span className="text-secondary font-semibold">•</span> Campus Daily
-        </span>
-        <button
-          type="button"
-          className="rounded-full bg-[#A95162] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-90"
-        >
-          Subscribe
-        </button>
-      </div>
-
-      <div className="mt-4 flex items-center justify-between text-xs text-on-surface-variant">
-        <span>643 VOTES</span>
-        <button type="button" className="text-[#A95162] font-semibold">
-          See Results
-        </button>
-      </div>
-    </section>
-  );
-}
-
-function TrendingCard({ post }: { post: FeedPost }) {
-  const likes =
-    post.likes >= 1000
-      ? `${Math.round(post.likes / 100) / 10}k`
-      : `${post.likes}`;
-
-  return (
-    <article className="rounded-2xl border border-black/10 bg-white/75 backdrop-blur shadow-sm overflow-hidden">
-      <div className="p-5">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <div className="inline-flex items-center rounded-full bg-black/5 px-3 py-1 text-[11px] font-semibold tracking-wide text-on-surface-variant">
-              TRENDING
-            </div>
-
-            <h3 className="mt-4 text-2xl font-semibold text-on-surface leading-snug">
-              {post.title}
-            </h3>
-
-            <p className="mt-3 text-sm text-on-surface-variant leading-relaxed">
-              {post.description}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            className="shrink-0 rounded-full bg-[#A95162] px-5 py-2 text-sm font-medium text-white shadow-sm hover:opacity-90"
-          >
-            Subscribe
-          </button>
-        </div>
-
-        <div className="mt-6 flex items-center justify-between">
-          <div className="text-sm text-on-surface-variant">• {post.author}</div>
-          <div className="flex items-center gap-6">
-            <Stat icon="♡" value={likes} />
-            <Stat icon="💬" value={`${post.comments}`} />
-          </div>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-export default function FeedPage() {
   return (
     <main className="bg-background min-h-screen flex flex-col">
       <SiteHeader />
@@ -281,24 +160,55 @@ export default function FeedPage() {
           </h1>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <Pill active>All sparks</Pill>
-            <Pill href="/feed/roommate-drama">Roommate drama</Pill>
-            <Pill>Exam survival</Pill>
-            <Pill href="/feed/campus-fashion">Campus fashion</Pill>
+            <Pill href="/feed" active={!activeSlug}>
+              All sparks
+            </Pill>
+            {CATEGORIES.map((cat) => (
+              <Pill
+                key={cat.slug}
+                href={`/feed?category=${cat.slug}`}
+                active={activeSlug === cat.slug}
+              >
+                {cat.label.charAt(0) + cat.label.slice(1).toLowerCase()}
+              </Pill>
+            ))}
             <Pill href="/feed/upcoming-events">Upcoming events</Pill>
           </div>
 
-          <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            <div className="space-y-8">
-              <OriginalPostCard post={POSTS[0]} />
-              <NewestCard />
-            </div>
+          {activeCategory ? (
+            <p className="mt-6 text-sm text-on-surface-variant">
+              Showing{" "}
+              <span className="font-semibold text-on-surface">
+                {visiblePosts.length}
+              </span>{" "}
+              {visiblePosts.length === 1 ? "spark" : "sparks"} in{" "}
+              <span className="font-semibold text-[#A95162]">
+                {activeCategory.label}
+              </span>
+              .
+            </p>
+          ) : null}
 
-            <aside className="space-y-8">
-              <WeeklyHotTakeCard />
-              <TrendingCard post={POSTS[1]} />
-            </aside>
-          </div>
+          {visiblePosts.length > 0 ? (
+            <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+              {visiblePosts.map((post) => (
+                <FeedCard key={post.id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-10 rounded-2xl border border-dashed border-black/15 bg-white/60 p-10 text-center">
+              <p className="text-on-surface-variant">
+                No sparks in this category yet. Be the first to start the
+                conversation.
+              </p>
+              <Link
+                href="/studio/create-post"
+                className="mt-5 inline-flex rounded-full bg-[#A95162] px-5 py-2 text-sm font-medium text-white shadow-sm hover:opacity-90"
+              >
+                Write a post
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </main>

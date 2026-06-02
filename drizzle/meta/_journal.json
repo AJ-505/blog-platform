@@ -15,6 +15,13 @@
       "when": 1780389565041,
       "tag": "0001_awesome_zombie",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1780392357599,
+      "tag": "0002_long_captain_cross",
+      "breakpoints": true
     }
   ]
 }

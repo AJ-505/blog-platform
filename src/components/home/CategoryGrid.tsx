@@ -1,29 +1,10 @@
 import Link from "next/link";
-import Image, { StaticImageData } from "next/image";
-import poeticImg from "@/assets/Poetic.png";
-import spatialImg from "@/assets/spatial.png";
-import PhilosophyImg from "@/assets/Philosophy.png";
-import digitalImg from "@/assets/Digital.png";
+import Image from "next/image";
 
-type Category = {
-  title: string;
-  tag: string;
-  img: string | StaticImageData;
-};
-
-const DEFAULT_CATEGORIES: Category[] = [
-  { title: "Modern Stoicism", tag: "PHILOSOPHY", img: PhilosophyImg },
-  { title: "Digital Expression", tag: "VISUAL ARTS", img: digitalImg },
-  { title: "Poetic Structures", tag: "LITERATURE", img: poeticImg },
-  {
-    title: "Spatial Design",
-    tag: "ARCHITECTURE",
-    img: spatialImg,
-  },
-];
+import { CATEGORIES, type Category } from "@/lib/categories";
 
 export function CategoryGrid({
-  categories = DEFAULT_CATEGORIES,
+  categories = CATEGORIES,
 }: {
   categories?: Category[];
 }) {
@@ -39,27 +20,27 @@ export function CategoryGrid({
           </h2>
         </div>
 
-        <a
-          href="#"
+        <Link
+          href="/feed"
           className="inline-flex items-center gap-2 text-sm font-medium text-on-surface-variant hover:text-primary transition"
         >
           SEE ALL TOPICS
           <span aria-hidden className="text-lg leading-none">
             →
           </span>
-        </a>
+        </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {categories.map((cat) => (
           <Link
-            key={cat.title}
-            href="/article/sample-article"
+            key={cat.slug}
+            href={`/feed?category=${cat.slug}`}
             className="group relative overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition"
           >
             <Image
               src={cat.img}
-              alt={cat.title}
+              alt={cat.label}
               width={520}
               height={640}
               className="w-full h-[260px] object-cover"
@@ -72,7 +53,7 @@ export function CategoryGrid({
                 {cat.tag}
               </div>
               <div className="mt-1 text-xl font-semibold text-white">
-                {cat.title}
+                {cat.label}
               </div>
             </div>
 

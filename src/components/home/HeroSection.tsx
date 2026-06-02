@@ -24,9 +24,12 @@ export function HeroSection() {
           >
             Get Started
           </Link>
-          <button className="cursor-pointer btn-secondary px-7 py-3 rounded-lg font-medium border">
-            <Link href="/discover">View Showcases</Link>
-          </button>
+          <Link
+            href="/discover"
+            className="btn-secondary px-7 py-3 rounded-lg font-medium border"
+          >
+            View Showcases
+          </Link>
         </div>
       </div>
 
@@ -50,7 +53,7 @@ export function HeroSection() {
                 Trending Now
               </div>
               <Link
-                href="/article/sample-article"
+                href="/feed"
                 className="mt-1 block text-primary font-semibold leading-snug"
               >
                 The Art of Minimalist Living

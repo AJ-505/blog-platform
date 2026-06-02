@@ -209,9 +209,33 @@ export function SettingsView({
         >
           SCRIBBLED
         </Link>
-        <Link href="/" className="btn-secondary btn-home rounded-full px-4 py-2">
-          Home
-        </Link>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            aria-label="Go back"
+            className="btn-secondary rounded-full flex items-center gap-2 px-4 py-2"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M19 12H5" />
+              <path d="m12 19-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+          <Link href="/" className="btn-secondary btn-home rounded-full px-4 py-2">
+            Home
+          </Link>
+        </div>
       </header>
 
       <div className="container mx-auto max-w-[760px] px-4 py-12">

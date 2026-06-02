@@ -5,9 +5,11 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
 import { CommentsSection } from "@/components/CommentsSection";
+import { LikeButton } from "@/components/LikeButton";
 import { SiteHeader } from "@/components/home/SiteHeader";
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { getCommentsForPost } from "@/lib/comments";
+import { getLikedPostIds } from "@/lib/likes";
 import { getPostBySlug } from "@/lib/posts";
 import { getCurrentUser } from "@/lib/server-auth";
 
@@ -22,6 +24,11 @@ export default async function ArticlePage({ params }: PageProps) {
   const dbPost = await getPostBySlug(slug);
   const postComments = dbPost ? await getCommentsForPost(dbPost.id) : [];
   const currentUser = await getCurrentUser();
+  // Sequential queries: the libsql client isn't reliable with concurrent
+  // statements on the same connection (see api/user/data).
+  const likedPostIds = dbPost
+    ? await getLikedPostIds(currentUser?.username ?? null)
+    : new Set<number>();
   let content = "";
 
   if (dbPost) {
@@ -77,7 +84,16 @@ export default async function ArticlePage({ params }: PageProps) {
             <h1 className="mt-3 text-4xl font-semibold leading-tight text-on-surface">
               {dbPost.title}
             </h1>
-            <p className="mt-4 text-on-surface-variant">By {dbPost.author}</p>
+            <div className="mt-4 flex items-center justify-between">
+              <p className="text-on-surface-variant">By {dbPost.author}</p>
+              <LikeButton
+                postId={dbPost.id}
+                initialLikes={dbPost.likes}
+                initialLiked={likedPostIds.has(dbPost.id)}
+                isAuthenticated={Boolean(currentUser)}
+                redirectTo={`/article/${dbPost.slug}`}
+              />
+            </div>
           </header>
         ) : null}
         <article className="prose prose-neutral lg:prose-lg max-w-none prose-pre:bg-[#0d1117] prose-pre:border prose-pre:border-border/50">

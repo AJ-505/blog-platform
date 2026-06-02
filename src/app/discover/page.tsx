@@ -2,7 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { SiteHeader } from "@/components/home/SiteHeader";
+import { RecommendedUsers } from "@/components/discover/RecommendedUsers";
+import { LikeButton } from "@/components/LikeButton";
 import { getDiscoverPosts } from "@/lib/posts";
+import { getRecommendedAuthors } from "@/lib/follows";
+import { getLikedPostIds } from "@/lib/likes";
+import { getCurrentUser } from "@/lib/server-auth";
 
 import artImg from "@/assets/Art.png";
 import bookImg from "@/assets/Book.png";
@@ -21,6 +26,7 @@ type DiscoverPost = {
   excerpt: string;
   image?: unknown;
   likes: number;
+  liked: boolean;
   comments: number;
 };
 
@@ -64,12 +70,24 @@ function IconStat({ icon, value }: { icon: string; value: number }) {
   );
 }
 
-function PostActions({ likes, comments }: { likes: number; comments: number }) {
+function PostActions({
+  post,
+  isAuthenticated,
+}: {
+  post: DiscoverPost;
+  isAuthenticated: boolean;
+}) {
   return (
     <div className="mt-5 flex items-center justify-between text-on-surface-variant">
       <div className="flex items-center gap-6">
-        <IconStat icon="♡" value={likes} />
-        <IconStat icon="💬" value={comments} />
+        <LikeButton
+          postId={post.id}
+          initialLikes={post.likes}
+          initialLiked={post.liked}
+          isAuthenticated={isAuthenticated}
+          redirectTo="/discover"
+        />
+        <IconStat icon="💬" value={post.comments} />
       </div>
       <div className="flex items-center gap-4">
         <button
@@ -87,7 +105,13 @@ function PostActions({ likes, comments }: { likes: number; comments: number }) {
   );
 }
 
-function PostCard({ post }: { post: DiscoverPost }) {
+function PostCard({
+  post,
+  isAuthenticated,
+}: {
+  post: DiscoverPost;
+  isAuthenticated: boolean;
+}) {
   const hasHero = Boolean(post.image);
 
   return (
@@ -145,7 +169,7 @@ function PostCard({ post }: { post: DiscoverPost }) {
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
           </Link>
-          <PostActions likes={post.likes} comments={post.comments} />
+          <PostActions post={post} isAuthenticated={isAuthenticated} />
         </div>
       ) : (
         <div className="px-6 md:px-7 pb-6 md:pb-7">
@@ -157,7 +181,7 @@ function PostCard({ post }: { post: DiscoverPost }) {
               {post.excerpt}
             </div>
           </Link>
-          <PostActions likes={post.likes} comments={post.comments} />
+          <PostActions post={post} isAuthenticated={isAuthenticated} />
         </div>
       )}
       <div className="px-6 pb-6 md:px-7 md:pb-7">
@@ -169,48 +193,6 @@ function PostCard({ post }: { post: DiscoverPost }) {
         </Link>
       </div>
     </article>
-  );
-}
-
-function RecommendedUsers() {
-  const users = [
-    { name: "Sarah K." },
-    { name: "Jordan Chen" },
-    { name: "Elena M." },
-  ];
-
-  return (
-    <section className="rounded-3xl border border-black/10 bg-white/70 backdrop-blur shadow-sm overflow-hidden">
-      <div className="p-5 flex items-center justify-between">
-        <div className="font-semibold text-on-surface">Recommended for you</div>
-        <button
-          type="button"
-          className="text-on-surface-variant hover:text-primary"
-          aria-label="Close"
-        >
-          ×
-        </button>
-      </div>
-      <div className="px-5 pb-5 grid grid-cols-3 gap-4">
-        {users.map((u) => (
-          <div
-            key={u.name}
-            className="rounded-2xl border border-black/10 bg-white/70 p-4 text-center"
-          >
-            <div className="w-12 h-12 rounded-full bg-black/10 mx-auto" />
-            <div className="mt-3 text-sm font-medium text-on-surface truncate">
-              {u.name}
-            </div>
-            <button
-              type="button"
-              className="mt-3 w-full rounded-full bg-[#A95162] text-white py-2 text-sm font-medium shadow-sm border border-black/10 hover:bg-[#F2C7B8] hover:text-black transition"
-            >
-              Follow
-            </button>
-          </div>
-        ))}
-      </div>
-    </section>
   );
 }
 
@@ -247,25 +229,33 @@ function TrendingNow({ posts }: { posts: DiscoverPost[] }) {
           ))}
         </div>
 
-        <button
-          type="button"
-          className="mt-6 w-full rounded-xl border border-black/10 bg-white/60 py-3 text-sm font-medium hover:bg-white"
+        <Link
+          href="/feed"
+          className="mt-6 flex w-full items-center justify-center rounded-xl border border-black/10 bg-white/60 py-3 text-sm font-medium transition hover:bg-white"
         >
           See the full list
-        </button>
+        </Link>
       </div>
     </section>
   );
 }
 
 export default async function DiscoverPage() {
+  const viewer = await getCurrentUser();
+  // Queried sequentially: the libsql client isn't reliable with concurrent
+  // statements on the same connection (see api/user/data).
+  const likedPostIds = await getLikedPostIds(viewer?.username ?? null);
   const posts = (await getDiscoverPosts()).map((post) => ({
     ...post,
+    liked: likedPostIds.has(post.id),
     timeAgo: formatTimeAgo(post.createdAt),
     image: post.imageKey
       ? imageByKey[post.imageKey as keyof typeof imageByKey]
       : undefined,
   }));
+  const recommendedAuthors = await getRecommendedAuthors(
+    viewer?.username ?? null,
+  );
 
   return (
     <main className="min-h-screen flex flex-col">
@@ -274,10 +264,15 @@ export default async function DiscoverPage() {
       <div className="container mx-auto max-w-[1120px] px-4 py-10 flex-1">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
           <div className="space-y-8">
-            {posts[0] ? <PostCard post={posts[0]} /> : null}
-            <RecommendedUsers />
+            {posts[0] ? (
+              <PostCard post={posts[0]} isAuthenticated={Boolean(viewer)} />
+            ) : null}
+            <RecommendedUsers
+              authors={recommendedAuthors}
+              isAuthenticated={Boolean(viewer)}
+            />
             {posts.slice(1).map((p) => (
-              <PostCard key={p.id} post={p} />
+              <PostCard key={p.id} post={p} isAuthenticated={Boolean(viewer)} />
             ))}
           </div>
 

@@ -42,16 +42,55 @@ export async function getPostBySlug(slug: string) {
     })
     .from(posts)
     .innerJoin(users, eq(posts.authorId, users.username))
-    .where(
-      and(
-        eq(posts.slug, slug),
-        eq(posts.isDiscover, 1),
-        eq(posts.status, "published"),
-      ),
-    )
+    .where(and(eq(posts.slug, slug), eq(posts.status, "published")))
     .limit(1);
 
   return post;
+}
+
+// Every published post for the public `/feed` view, newest first. Unlike the
+// discover query this is not scoped to `isDiscover`: the feed is the full firehose
+// of campus posts. Category filtering happens in the page from each post's badge.
+export async function getFeedPosts() {
+  return db
+    .select({
+      id: posts.id,
+      author: users.name,
+      slug: posts.slug,
+      title: posts.title,
+      excerpt: posts.excerpt,
+      badge: posts.badge,
+      likes: posts.likes,
+      comments: posts.commentCount,
+      createdAt: posts.createdAt,
+    })
+    .from(posts)
+    .innerJoin(users, eq(posts.authorId, users.username))
+    .where(eq(posts.status, "published"))
+    .orderBy(desc(posts.createdAt));
+}
+
+// Every post owned by `authorId` (drafts and published), newest first, for the
+// "Manage your blogs" studio view. Scoped to the owner so creators only ever
+// see and act on their own work.
+export async function getPostsByAuthor(authorId: string) {
+  return db
+    .select({
+      id: posts.id,
+      slug: posts.slug,
+      title: posts.title,
+      excerpt: posts.excerpt,
+      badge: posts.badge,
+      imageKey: posts.imageKey,
+      likes: posts.likes,
+      comments: posts.commentCount,
+      status: posts.status,
+      createdAt: posts.createdAt,
+      updatedAt: posts.updatedAt,
+    })
+    .from(posts)
+    .where(eq(posts.authorId, authorId))
+    .orderBy(desc(posts.createdAt));
 }
 
 // Load a draft (or any post) owned by `authorId` so it can be reopened in the
